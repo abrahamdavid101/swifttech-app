@@ -325,29 +325,38 @@
                             const response = await fetch(`${API_URL}/subscription-plan`, {
                                 method: 'POST',
                                 headers: {
-                                    'Content-Type': 'application/json'
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
                                 },
-                                body: JSON.stringify({ email: storedEmail })
+                                body: JSON.stringify({ 
+                                    email: storedEmail
+                                })
                             });
                             
                             if (!response.ok) {
-                                throw new Error('Failed to fetch subscription plan');
+                                console.error('Server response:', await response.text());
+                                throw new Error(`Failed to fetch subscription plan: ${response.status}`);
                             }
                             
                             const data = await response.json();
-                            localStorage.setItem('userPlan', data.plan || 'free');
-                            return data.plan || 'free'; // Returns 'free' as default if plan is not specified
+                            if (!data || !data.plan) {
+                                throw new Error('Invalid response data');
+                            }
+                            
+                            localStorage.setItem('userPlan', data.plan);
+                            return data.plan;
                         } catch (error) {
                             console.error('Error fetching user subscription plan:', error);
                             localStorage.setItem('userPlan', 'free');
-                            return 'free'; // Returns 'free' as fallback in case of error
+                            return 'free';
                         }
                     }
                     
-                    getUserSubscriptionPlan();
-
-          document.querySelectorAll('.nav-item').forEach(item => {
-              item.addEventListener('click', () => {
+                    getUserSubscriptionPlan();          
+                    
+                    
+                  document.querySelectorAll('.nav-item').forEach(item => {
+                  item.addEventListener('click', () => {
                   document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
                   document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
                   
