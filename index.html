@@ -343,7 +343,8 @@
                             return 'free'; // Returns 'free' as fallback in case of error
                         }
                     }
-          
+                    
+                    getUserSubscriptionPlan();
 
           document.querySelectorAll('.nav-item').forEach(item => {
               item.addEventListener('click', () => {
