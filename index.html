@@ -559,17 +559,19 @@
                   });
                   const data = await response.json();
                   
-                  // Save user plan to localStorage
-                  if (data.plan) {
-                      localStorage.setItem('userPlan', data.plan);
-                      console.log('User plan updated:', data.plan);
-                  }
-                  
                   switch(tabId) {
                       case 'dashboard':
                           updateDashboard(data);
                           break;
                       case 'templates':
+                          if (data && data.plan) {
+                              try {
+                                  localStorage.setItem('userPlan', data.plan);
+                                  console.log('User plan updated:', data.plan);
+                              } catch (error) {
+                                  console.error('Error saving user plan:', error);
+                              }
+                          }
                           renderTemplates(data.swifttech.templates);
                           break;
                       case 'snippets':
