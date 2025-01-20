@@ -332,7 +332,8 @@
               });
           });
 
-          function renderTemplates(templates) {
+          async function renderTemplates(templates) {
+              const userPlan = await getUserSubscriptionPlan();
               const templatesList = document.getElementById('templatesList');
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
@@ -348,22 +349,45 @@
               templatesList.appendChild(templatesGrid);
 
               const renderTemplateCards = (templatesData) => {
-                  templatesGrid.innerHTML = Object.values(templatesData).map(template => `
-                      <div class="template-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
-                          <img src="${template.imageURL}" alt="${template.name}" style="width: 100%; height: 200px; object-fit: cover;">
-                          <div style="padding: 15px;">
-                              <h4>${template.name}</h4>
-                              <p>${template.description}</p>
-                              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                  <span>${template.isFree ? 'Free' : '$' + template.price}</span>
-                                  <span>⭐ ${template.ratings.average} (${template.ratings.reviews})</span>
-                              </div>
-                              <div style="margin-top: 10px;">
-                                  ${template.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                  templatesGrid.innerHTML = Object.values(templatesData).map(template => {
+                      const isAccessible = template.isFree || 
+                          (userPlan === 'premium' && template.plan <= 2) || 
+                          (userPlan === 'gold' && template.plan <= 3);
+
+                      return `
+                          <div class="template-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
+                              <img src="${template.imageURL}" alt="${template.name}" style="width: 100%; height: 200px; object-fit: cover;">
+                              <div style="padding: 15px;">
+                                  <h4>${template.name}</h4>
+                                  <p>${template.description}</p>
+                                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                                      <span>${template.isFree ? 'Free' : template.price}</span>
+                                      <span>⭐ ${template.ratings.average} (${template.ratings.reviews})</span>
+                                  </div>
+                                  <div style="margin-top: 10px;">
+                                      ${template.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                                  </div>
+                                  <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                      <button onclick="previewTemplate('${template.id}')" class="btn btn-outline-primary" style="flex: 1;">
+                                          <i class="fas fa-eye"></i> Preview
+                                      </button>
+                                      ${isAccessible ? `
+                                          <button onclick="downloadTemplate('${template.id}')" class="btn btn-primary" style="flex: 1;">
+                                              <i class="fas fa-download"></i> Download
+                                          </button>
+                                          <button onclick="copyTemplateId('${template.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
+                                              <i class="fas fa-copy"></i>
+                                          </button>
+                                      ` : `
+                                          <button class="btn btn-secondary" disabled style="flex: 1;">
+                                              <i class="fas fa-lock"></i> Upgrade Required
+                                          </button>
+                                      `}
+                                  </div>
                               </div>
                           </div>
-                      </div>
-                  `).join('');
+                      `;
+                  }).join('');
               };
 
               searchInput.addEventListener('input', (e) => {
@@ -379,7 +403,8 @@
               renderTemplateCards(templates);
           }
 
-          function renderSnippets(snippets) {
+          async function renderSnippets(snippets) {
+              const userPlan = await getUserSubscriptionPlan();
               const snippetsList = document.getElementById('snippetsList');
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
@@ -395,24 +420,47 @@
               snippetsList.appendChild(snippetsGrid);
 
               const renderSnippetCards = (snippetsData) => {
-                  snippetsGrid.innerHTML = Object.values(snippetsData).map(snippet => `
-                      <div class="snippet-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
-                          <div style="padding: 15px;">
-                              <h4>${snippet.name}</h4>
-                              <p>${snippet.description}</p>
-                              <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                  <code>${snippet.language}</code>
-                              </div>
-                              <div style="display: flex; justify-content: space-between; align-items: center;">
-                                  <span>${snippet.isFree ? 'Free' : '$' + snippet.price}</span>
-                                  <span>⭐ ${snippet.ratings.average} (${snippet.ratings.reviews})</span>
-                              </div>
-                              <div style="margin-top: 10px;">
-                                  ${snippet.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                  snippetsGrid.innerHTML = Object.values(snippetsData).map(snippet => {
+                      const isAccessible = snippet.isFree || 
+                          (userPlan === 'premium' && snippet.plan <= 2) || 
+                          (userPlan === 'gold' && snippet.plan <= 3);
+
+                      return `
+                          <div class="snippet-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
+                              <div style="padding: 15px;">
+                                  <h4>${snippet.name}</h4>
+                                  <p>${snippet.description}</p>
+                                  <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                      <code>${snippet.language}</code>
+                                  </div>
+                                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                                      <span>${snippet.isFree ? 'Free' : snippet.price}</span>
+                                      <span>⭐ ${snippet.ratings.average} (${snippet.ratings.reviews})</span>
+                                  </div>
+                                  <div style="margin-top: 10px;">
+                                      ${snippet.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                                  </div>
+                                  <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                      <button onclick="previewSnippet('${snippet.id}')" class="btn btn-outline-primary" style="flex: 1;">
+                                          <i class="fas fa-eye"></i> Preview
+                                      </button>
+                                      ${isAccessible ? `
+                                          <button onclick="downloadSnippet('${snippet.id}')" class="btn btn-primary" style="flex: 1;">
+                                              <i class="fas fa-download"></i> Download
+                                          </button>
+                                          <button onclick="copySnippetId('${snippet.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
+                                              <i class="fas fa-copy"></i>
+                                          </button>
+                                      ` : `
+                                          <button class="btn btn-secondary" disabled style="flex: 1;">
+                                              <i class="fas fa-lock"></i> Upgrade Required
+                                          </button>
+                                      `}
+                                  </div>
                               </div>
                           </div>
-                      </div>
-                  `).join('');
+                      `;
+                  }).join('');
               };
 
               searchInput.addEventListener('input', (e) => {
@@ -428,7 +476,8 @@
               renderSnippetCards(snippets);
           }
 
-          function renderCourses(courses) {
+          async function renderCourses(courses) {
+              const userPlan = await getUserSubscriptionPlan();
               const coursesList = document.getElementById('coursesList');
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
@@ -444,22 +493,45 @@
               coursesList.appendChild(coursesGrid);
 
               const renderCourseCards = (coursesData) => {
-                  coursesGrid.innerHTML = Object.values(coursesData).map(course => `
-                      <div class="course-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
-                          <img src="${course.imageURL}" alt="${course.name}" style="width: 100%; height: 200px; object-fit: cover;">
-                          <div style="padding: 15px;">
-                              <h4>${course.name}</h4>
-                              <p>${course.description}</p>
-                              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                  <span>${course.isFree ? 'Free' : '$' + course.price}</span>
-                                  <span>⭐ ${course.ratings.average} (${course.ratings.reviews})</span>
-                              </div>
-                              <div style="margin-top: 10px;">
-                                  ${course.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                  coursesGrid.innerHTML = Object.values(coursesData).map(course => {
+                      const isAccessible = course.isFree || 
+                          (userPlan === 'premium' && course.plan <= 2) || 
+                          (userPlan === 'gold' && course.plan <= 3);
+
+                      return `
+                          <div class="course-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
+                              <img src="${course.imageURL}" alt="${course.name}" style="width: 100%; height: 200px; object-fit: cover;">
+                              <div style="padding: 15px;">
+                                  <h4>${course.name}</h4>
+                                  <p>${course.description}</p>
+                                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                                      <span>${course.isFree ? 'Free' : course.price}</span>
+                                      <span>⭐ ${course.ratings.average} (${course.ratings.reviews})</span>
+                                  </div>
+                                  <div style="margin-top: 10px;">
+                                      ${course.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                                  </div>
+                                  <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                      <button onclick="previewCourse('${course.id}')" class="btn btn-outline-primary" style="flex: 1;">
+                                          <i class="fas fa-eye"></i> Preview
+                                      </button>
+                                      ${isAccessible ? `
+                                          <button onclick="startCourse('${course.id}')" class="btn btn-primary" style="flex: 1;">
+                                              <i class="fas fa-play"></i> Start Course
+                                          </button>
+                                          <button onclick="copyCourseId('${course.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
+                                              <i class="fas fa-copy"></i>
+                                          </button>
+                                      ` : `
+                                          <button class="btn btn-secondary" disabled style="flex: 1;">
+                                              <i class="fas fa-lock"></i> Upgrade Required
+                                          </button>
+                                      `}
+                                  </div>
                               </div>
                           </div>
-                      </div>
-                  `).join('');
+                      `;
+                  }).join('');
               };
 
               searchInput.addEventListener('input', (e) => {
@@ -474,7 +546,29 @@
 
               renderCourseCards(courses);
           }
-
+          async function getUserSubscriptionPlan() {
+              const storedEmail = localStorage.getItem('userEmail');
+              try {
+                  const response = await fetch(`${API_URL}/subscription-plan`, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({ email: storedEmail })
+                  });
+          
+                  if (!response.ok) {
+                      throw new Error('Failed to fetch subscription plan');
+                  }
+          
+                  const data = await response.json();
+                  return data.plan || 'free'; // Returns 'free' as default if plan is not specified
+              } catch (error) {
+                  console.error('Error fetching user subscription plan:', error);
+                  return 'free'; // Returns 'free' as fallback in case of error
+              }
+          }
+          
           async function loadTabContent(tabId) {
               const storedEmail = localStorage.getItem('userEmail');
               try {
