@@ -357,13 +357,38 @@
                           (userPlan === 'gold');
 
                       const planBadge = template.plan === 1 ? 
-                          '<span class="badge bg-success"><i class="fas fa-star"></i> Free</span>' :
+                          '<span class="badge bg-success">Free</span>' :
                           template.plan === 2 ? 
-                          '<span class="badge bg-primary"><i class="fas fa-crown"></i> Premium</span>' :
-                          '<span class="badge bg-warning"><i class="fas fa-gem"></i> Gold</span>';
+                          '<span class="badge bg-primary">Premium</span>' :
+                          '<span class="badge bg-warning">Gold</span>';
 
                       const cardOpacity = isAccessible ? '1' : '0.7';
                       const cardPointerEvents = isAccessible ? 'auto' : 'none';
+                      const buttonStyle = `
+                          font-family: 'Montserrat', sans-serif;
+                          width: 100%;
+                          padding: 12px;
+                          margin: 5px 0;
+                          border-radius: 6px;
+                          transition: all 0.3s ease;
+                          font-weight: 500;
+                          text-transform: uppercase;
+                          letter-spacing: 0.5px;
+                      `;
+                      const activeButtonStyle = `
+                          ${buttonStyle}
+                          cursor: pointer;
+                          background: #fff;
+                          border: 2px solid #007bff;
+                          color: #007bff;
+                      `;
+                      const disabledButtonStyle = `
+                          ${buttonStyle}
+                          background: #f5f5f5;
+                          border: 2px solid #ddd;
+                          color: #999;
+                          cursor: not-allowed;
+                      `;
 
                       return `
                           <div class="template-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); opacity: ${cardOpacity}; pointer-events: ${cardPointerEvents};">
@@ -374,34 +399,29 @@
                                   </div>
                               </div>
                               <div style="padding: 20px;">
-                                  <h4 style="margin-bottom: 10px; color: #333;">${template.name}</h4>
+                                  <h4 style="margin-bottom: 10px; color: #333; font-family: 'Montserrat', sans-serif;">${template.name}</h4>
                                   <p style="color: #666; font-size: 0.9em;">${template.description}</p>
-                                  <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
-                                      <div style="display: flex; align-items: center;">
-                                          <i class="fas fa-star" style="color: #ffc107; margin-right: 5px;"></i>
-                                          <span>${template.ratings.average}</span>
-                                          <span style="color: #666; margin-left: 5px;">(${template.ratings.reviews})</span>
-                                      </div>
-                                  </div>
                                   <div style="margin: 15px 0;">
-                                      ${template.tags.map(tag => `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;"><i class="fas fa-tag" style="margin-right: 5px;"></i>${tag}</span>`).join('')}
+                                      ${template.tags.map(tag => `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${tag}</span>`).join('')}
                                   </div>
                                   <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-                                      <button onclick="previewTemplate('${template.id}')" class="btn btn-outline-primary" style="width: 100%; text-align: left;">
-                                          <i class="fas fa-eye"></i> Preview Template
+                                      <button onclick="previewTemplate('${template.id}')" 
+                                          style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
+                                          Preview
                                       </button>
-                                      ${isAccessible ? `
-                                          <button onclick="downloadTemplate('${template.id}')" class="btn btn-primary" style="width: 100%; text-align: left;">
-                                              <i class="fas fa-download"></i> Download Template
-                                          </button>
-                                          <button onclick="copyTemplateId('${template.id}')" class="btn btn-secondary" style="width: 100%; text-align: left;">
-                                              <i class="fas fa-copy"></i> Copy Template ID
-                                          </button>
-                                      ` : `
-                                          <div class="text-center text-muted">
-                                              <i class="fas fa-lock"></i> Upgrade your plan to access this template
+                                      <button onclick="downloadTemplate('${template.id}')"
+                                          style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
+                                          Download
+                                      </button>
+                                      <button onclick="copyTemplateId('${template.id}')"
+                                          style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
+                                          Copy
+                                      </button>
+                                      ${!isAccessible ? `
+                                          <div style="text-align: center; color: #666; font-family: 'Montserrat', sans-serif; margin-top: 10px;">
+                                              Upgrade your plan to access this template
                                           </div>
-                                      `}
+                                      ` : ''}
                                   </div>
                               </div>
                           </div>
@@ -420,8 +440,7 @@
               });
 
               renderTemplateCards(templates);
-          }
-          
+          }          
           async function renderSnippets(snippets) {
               const userPlan = localStorage.getItem('userPlan') || 'free';
               const snippetsList = document.getElementById('snippetsList');
