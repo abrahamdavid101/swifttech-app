@@ -259,8 +259,11 @@
           localStorage.setItem('userEmail', userData.email);
           window.location.href = userData.redirect;
           return;
+        } else if (userData.exists && !userData.loginState) {
+          // User exists but not logged in
+          await sendLoginLink(email.toLowerCase().trim());
         } else {
-          // User either doesn't exist or is not active, send login link
+          // User doesn't exist, send login link
           await sendLoginLink(email.toLowerCase().trim());
         }
 
@@ -274,8 +277,7 @@
       // Reset submit button after response
       submitButton.innerHTML = 'Send Login Link';
       submitButton.disabled = false;
-    }
-// Function to send login link
+    }// Function to send login link
     async function sendLoginLink(email) {
       try {
         const response = await fetch('https://swifttech-server.onrender.com/send-login-link', {
