@@ -339,6 +339,7 @@
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
               searchInput.placeholder = 'Search templates...';
+              searchInput.style.fontFamily = "'Montserrat', sans-serif";              
               searchInput.className = 'search-input';
               searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;';
               
@@ -351,17 +352,13 @@
 
               const renderTemplateCards = (templatesData) => {
                   templatesGrid.innerHTML = Object.values(templatesData).map(template => {
-                      const isAccessible = 
-                          (userPlan === 'free' && template.plan === 1) || 
-                          (userPlan === 'premium' && template.plan <= 2) || 
-                          (userPlan === 'gold');
-
-                      const planBadge = template.plan === 1 ? 
-                          '<span class="badge bg-success">Free</span>' :
-                          template.plan === 2 ? 
-                          '<span class="badge bg-primary">Premium</span>' :
-                          '<span class="badge bg-warning">Gold</span>';
-
+                      const planValues = {
+                          'free': 1,
+                          'premium': 2,
+                          'gold': 3
+                      };
+                      const userPlanValue = planValues[userPlan];
+                      const isAccessible = userPlanValue >= template.plan;
                       const cardOpacity = isAccessible ? '1' : '0.7';
                       const cardPointerEvents = isAccessible ? 'auto' : 'none';
                       const buttonStyle = `
@@ -440,7 +437,9 @@
               });
 
               renderTemplateCards(templates);
-          }          
+          }
+          
+          
           async function renderSnippets(snippets) {
               const userPlan = localStorage.getItem('userPlan') || 'free';
               const snippetsList = document.getElementById('snippetsList');
