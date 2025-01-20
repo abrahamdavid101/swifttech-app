@@ -236,35 +236,28 @@
       submitButton.disabled = true;
 
       try {
-        // First check if user exists and their active status
-        const checkUserResponse = await fetch('https://swifttech-server.onrender.com/check-user-account', {
+        // First check login state
+        const loginStateResponse = await fetch('https://swifttech-server.onrender.com/check-login-state', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
           body: JSON.stringify({ 
-            email: email.toLowerCase().trim()
+            email: email.toLowerCase().trim() 
           })
         });
 
-        const userData = await checkUserResponse.json();
+        const loginStateData = await loginStateResponse.json();
 
-        if (userData.error) {
-          throw new Error(userData.error);
-        }
-
-        if (userData.exists && userData.loginState) {
-          localStorage.setItem('userEmail', userData.email);
-          window.location.href = userData.redirect;
+        if (loginStateData.loginState === true) {
+          localStorage.setItem('userEmail', email.toLowerCase().trim());
+          window.location.href = 'https://app.swifttech.me';
           return;
-        } else if (userData.exists && !userData.loginState) {
-          // User exists but not logged in
-          await sendLoginLink(email.toLowerCase().trim());
-        } else {
-          // User doesn't exist, send login link
-          await sendLoginLink(email.toLowerCase().trim());
         }
+
+        // If not logged in, send login link
+        await sendLoginLink(email.toLowerCase().trim());
 
       } catch (error) {
         document.getElementById('result').innerHTML = 'Error: ' + error.message;
@@ -277,6 +270,7 @@
       submitButton.innerHTML = 'Send Login Link';
       submitButton.disabled = false;
     }    
+
     // Function to send login link
     async function sendLoginLink(email) {
       try {
