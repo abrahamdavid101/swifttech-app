@@ -1,0 +1,515 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Dashboard</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+      <link rel="icon" href="favicon.png" type="image/x-icon">
+      <style>
+          * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+          }
+
+          body {
+              font-family: 'Montserrat', sans-serif;
+              line-height: 1.6;
+              background: #f8f9fa;
+              position: relative;
+          }
+
+          .cta-button {
+              padding: 8px 16px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              background: #f8f9fa;
+              color: #333;
+              font-family: 'Montserrat', sans-serif;
+          }
+
+          .primary-btn {
+              background: #1a73e8;
+              color: white;
+          }
+
+          .cta-button:hover {
+              opacity: 0.9;
+          }
+
+          .nav-menu {
+              display: flex;
+              gap: 20px;
+              margin-bottom: 30px;
+              overflow-x: auto;
+              -webkit-overflow-scrolling: touch;
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+          }
+
+          .nav-menu::-webkit-scrollbar {
+              display: none;
+          }
+
+          .nav-item {
+              padding: 10px 15px;
+              border-radius: 5px;
+              cursor: pointer;
+              color: #666;
+              white-space: nowrap;
+              flex-shrink: 0;
+          }
+
+          .nav-item:hover {
+              background: #1a73e8;
+              color: white;
+          }
+
+          @media screen and (max-width: 768px) {
+              .nav-menu {
+                  gap: 10px;
+                  padding-bottom: 5px;
+              }
+              
+              .nav-item {
+                  padding: 8px 12px;
+                  font-size: 0.9rem;
+              }
+          }
+      </style>  </head>
+  <body>
+      <section class="dashboard" style="padding: 10px; background: #f8f9fa;">
+          <div class="dashboard-container" style="max-width: 1200px; margin: 0 auto;">
+              <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: nowrap;">
+                  <h2 style="color: #333; white-space: nowrap; font-size: clamp(1rem, 4vw, 1.5rem);">Dashboard <img src="https://www.swifttech.me/swift.png" alt="Dashboard Icon" style="width: clamp(50px, 10vw, 70px); height: auto; margin-right: 8px; vertical-align: middle; font-size: 14px;"></h2>                  
+                  <div class="header-actions" style="display: flex; align-items: center; gap: 5px;">
+                                        <button class="cta-button" style="padding: clamp(5px, 2vw, 10px);" onclick="showNotifications()"><i class="fas fa-bell"></i></button>
+                                        <div id="notificationsPanel" style="display: none; position: absolute; top: 60px; right: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; max-height: 400px; overflow-y: auto; z-index: 1000;">
+                                            <div style="padding: 15px; border-bottom: 1px solid #eee;">
+                                                <h3 style="margin: 0; color: #333;">Notifications</h3>
+                                            </div>
+                                            <div id="notificationsList" style="padding: 10px;">
+                                                <div class="notification-item" style="padding: 10px; text-align: center; color: #666;">
+                                                    No notifications yet
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            function showNotifications() {
+                                                const panel = document.getElementById('notificationsPanel');
+                                                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                              
+                                                fetch('https://swifttech-server.onrender.com/notifications', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({
+                                                        email: localStorage.getItem('userEmail')                                                    })
+                                                })
+                                                .then(response => response.json())
+                                                .then(notifications => {
+                                                    const notificationsList = document.getElementById('notificationsList');
+                                                    if (!notifications || notifications.length === 0) {
+                                                        notificationsList.innerHTML = `
+                                                            <div class="notification-item" style="padding: 10px; text-align: center; color: #666;">
+                                                                No notifications yet
+                                                            </div>
+                                                        `;
+                                                        return;
+                                                    }
+                                                    notificationsList.innerHTML = notifications.map(notification => `
+                                                        <div class="notification-item" style="padding: 10px; border-bottom: 1px solid #f5f5f5;">
+                                                            <div style="font-weight: 500; color: #333;">${notification.message}</div>
+                                                            <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">${new Date(notification.timestamp).toLocaleDateString()}</div>
+                                                        </div>
+                                                    `).join('');
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error fetching notifications:', error);
+                                                    const notificationsList = document.getElementById('notificationsList');
+                                                    notificationsList.innerHTML = `
+                                                        <div class="notification-item" style="padding: 10px; text-align: center; color: #666;">
+                                                            Error loading notifications. Please try again later.
+                                                        </div>
+                                                    `;
+                                                });
+                                            }
+
+                                            // Close notifications panel when clicking outside
+                                            document.addEventListener('click', function(event) {
+                                                const panel = document.getElementById('notificationsPanel');
+                                                const button = event.target.closest('.cta-button');
+                                                if (!button && !panel.contains(event.target) && panel.style.display === 'block') {
+                                                    panel.style.display = 'none';
+                                                }
+                                            });
+                                        </script>                                        <button class="cta-button" style="padding: clamp(5px, 2vw, 10px);" onclick="document.querySelector('[data-tab=profile]').click()"><i class="fas fa-user"></i></button>                      
+                      <button class="cta-button primary-btn" style="white-space: nowrap; padding: clamp(5px, 2vw, 10px);" onclick="document.querySelector('[data-tab=hire]').click()">New Project</button>                  </div>
+              </div>
+
+              <div class="nav-menu">
+                  <div class="nav-item active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+                  <div class="nav-item" data-tab="templates"><i class="fas fa-file-code"></i> Templates</div>
+                  <div class="nav-item" data-tab="snippets"><i class="fas fa-code"></i> Snippets</div>
+                  <div class="nav-item" data-tab="hire"><i class="fas fa-users"></i> Hire</div>
+                  <div class="nav-item" data-tab="courses"><i class="fas fa-graduation-cap"></i> Courses</div>
+                  <div class="nav-item" data-tab="settings"><i class="fas fa-cog"></i> Settings</div>
+                  <div class="nav-item" data-tab="subscription"><i class="fas fa-credit-card"></i> Subscription</div>
+                  <div class="nav-item" data-tab="profile"><i class="fas fa-user-circle"></i> Profile</div>
+              </div>
+
+              <div id="dashboard" class="tab-content active">
+                  <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                      <div class="stat-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                          <h3 style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Active Projects</h3>
+                          <p style="font-size: 1.8rem; color: #1a73e8; font-weight: bold;" id="activeProjects">Loading...</p>
+                          <div style="display: flex; align-items: center; color: #28a745; font-size: 0.8rem;">
+                              <i class="fas fa-arrow-up"></i>
+                              <span style="margin-left: 5px;" id="projectsGrowth">Loading...</span>
+                          </div>
+                      </div>
+
+                      <div class="stat-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                          <h3 style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Total Budget</h3>
+                          <p style="font-size: 1.8rem; color: #1a73e8; font-weight: bold;" id="totalBudget">Loading...</p>
+                          <div style="display: flex; align-items: center; color: #28a745; font-size: 0.8rem;">
+                              <i class="fas fa-arrow-up"></i>
+                              <span style="margin-left: 5px;" id="budgetGrowth">Loading...</span>
+                          </div>
+                      </div>
+
+                      <div class="stat-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                          <h3 style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Completed Tasks</h3>
+                          <p style="font-size: 1.8rem; color: #1a73e8; font-weight: bold;" id="completedTasks">Loading...</p>
+                          <div style="display: flex; align-items: center; color: #28a745; font-size: 0.8rem;">
+                              <i class="fas fa-check-circle"></i>
+                              <span style="margin-left: 5px;" id="tasksStatus">Loading...</span>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="dashboard-content" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                      <div class="main-content" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                          <h3 style="margin-bottom: 20px;">Recent Projects</h3>
+                          <div class="project-list" id="projectList">
+                              <div style="text-align: center; padding: 20px;">Loading projects...</div>
+                          </div>
+                      </div>
+
+                      <div class="side-content" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                          <h3 style="margin-bottom: 20px;">Current User</h3>
+                          <div class="team-list" id="teamList">
+                              <div style="text-align: center; padding: 20px;">Loading current user...</div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div id="templates" class="tab-content">
+                  <div class="content-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                      <h3>Templates</h3>
+                      <div id="templatesList">Loading templates...</div>
+                  </div>
+              </div>
+
+              <div id="snippets" class="tab-content">
+                  <div class="content-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                      <h3>Code Snippets</h3>
+                      <div id="snippetsList">Loading snippets...</div>
+                  </div>
+              </div>
+
+              <div id="hire" class="tab-content">
+                  <div class="content-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                      <h3>Hire Developers</h3>
+                      <div id="developersList">Loading developers...</div>
+                  </div>
+              </div>
+
+              <div id="courses" class="tab-content">
+                  <div class="content-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                      <h3>Available Courses</h3>
+                      <div id="coursesList">Loading courses...</div>
+                  </div>
+              </div>
+
+              <div id="settings" class="tab-content">
+                  <div class="content-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                      <h3>Settings</h3>
+                      <div id="settingsContent">Loading settings...</div>
+                  </div>
+              </div>
+
+              <div id="subscription" class="tab-content">
+                  <div class="content-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                      <h3>Subscription Plans</h3>
+                      <div id="subscriptionPlans">Loading plans...</div>
+                  </div>
+              </div>
+
+              <div id="profile" class="tab-content">
+                  <div class="content-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                      <h3>User Profile</h3>
+                      <div id="profileContent">Loading profile...</div>
+                  </div>
+              </div>
+          </div>
+      </section>
+
+      <style>
+          .nav-item.active {
+              background: #1a73e8;
+              color: white;
+          }
+          .tab-content {
+              display: none;
+          }
+          .tab-content.active {
+              display: block;
+          }
+      </style>
+
+      <script>
+          const API_URL = 'https://swifttech-server.onrender.com';
+
+          // Check authentication state on page load and verify server connection
+          async function checkAuthState() {
+              const storedEmail = localStorage.getItem('userEmail');
+              
+              console.log('Stored email:', storedEmail); // Debug log
+              
+              if (!storedEmail || storedEmail === 'null' || storedEmail === 'undefined' || !storedEmail.includes('@')) {
+                  console.log('Invalid email - redirecting to login'); // Debug log
+                  localStorage.clear();
+                  setTimeout(() => {
+                      window.location.href = 'login.html';
+                  }, 7000);
+                  return;
+              }
+              
+              try {
+                  const response = await fetch(`${API_URL}/check-login-state`, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'Accept': 'application/json'
+                      },
+                      body: JSON.stringify({
+                          email: storedEmail
+                      })
+                  });              
+                  const data = await response.json();
+                  
+                  if (data.loginState === true) {
+                      console.log(true);
+                  } else {
+                      window.location.href = 'login.html';
+                  }
+                  
+                  } catch (error) {
+                      console.error('Error checking login state:', error);
+                      localStorage.clear();
+                      window.location.replace('login.html');
+                  }
+              }
+
+          // Run auth check before loading dashboard
+          checkAuthState();                   
+          // Tab switching functionality
+          document.querySelectorAll('.nav-item').forEach(item => {
+              item.addEventListener('click', () => {
+                  document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                  
+                  item.classList.add('active');
+                  const tabId = item.getAttribute('data-tab');
+                  document.getElementById(tabId).classList.add('active');
+
+                  loadTabContent(tabId);
+              });
+          });
+
+          function renderDevelopers(data) {
+              if (!data || !data.developers || !Array.isArray(data.developers)) {
+                  return '<p>No developers available</p>';
+              }
+              return data.developers.map(dev => `
+                  <div class="developer-card">
+                      <h4>${dev.name}</h4>
+                      <p>Skills: ${dev.skills.join(', ')}</p>
+                      <p>Experience: ${dev.experience} years</p>
+                      <p>Rate: ${dev.hourlyRate}/hour</p>
+                  </div>
+              `).join('');
+          }
+
+          function renderCourses(courses) {
+              if (!courses || !Array.isArray(courses)) {
+                  return '<p>No courses available</p>';
+              }
+              return courses.map(course => `
+                  <div class="course-card">
+                      <h4>${course.title}</h4>
+                      <p>${course.description}</p>
+                      <p>Duration: ${course.duration}</p>
+                      <p>Price: ${course.price}</p>
+                  </div>
+              `).join('');
+          }
+
+          function renderSettings(settings) {
+              return `
+                  <div class="settings-container">
+                      <div class="setting-item">
+                          <h4>Notifications</h4>
+                          <label><input type="checkbox" ${settings.notifications ? 'checked' : ''}> Enable notifications</label>
+                      </div>
+                      <div class="setting-item">
+                          <h4>Theme</h4>
+                          <select>
+                              <option ${settings.theme === 'light' ? 'selected' : ''}>Light</option>
+                              <option ${settings.theme === 'dark' ? 'selected' : ''}>Dark</option>
+                          </select>
+                      </div>
+                  </div>
+              `;
+          }
+
+          function renderSubscription(subscription) {
+              if (!subscription || !subscription.availablePlans || !Array.isArray(subscription.availablePlans)) {
+                  return '<p>No subscription plans available</p>';
+              }
+              return `
+                  <div class="subscription-container">
+                      <div class="current-plan">
+                          <h4>Current Plan: ${subscription.currentPlan}</h4>
+                          <p>Status: ${subscription.status}</p>
+                          <p>Next billing date: ${subscription.nextBillingDate}</p>
+                      </div>
+                      <div class="available-plans">
+                          ${subscription.availablePlans.map(plan => `
+                              <div class="plan-card">
+                                  <h4>${plan.name}</h4>
+                                  <p>${plan.description}</p>
+                                  <p>Price: ${plan.price}/month</p>
+                              </div>
+                          `).join('')}
+                      </div>
+                  </div>
+              `;
+          }
+
+          function renderProfile(profile) {
+              return `
+                  <div class="profile-container">
+                      <div class="profile-header">
+                          <img src="${profile.avatar || 'default-avatar.jpg'}" alt="Profile Picture" class="profile-avatar" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+                          <h4>${profile.name || 'User'}</h4>
+                      </div>
+                      <div class="profile-details">
+                          <p>Email: ${profile.email}</p>
+                          <p>Account Status: ${profile.accountStatus || 'active'}</p>
+                          <p>Balance: $${profile.balance || 0}</p>
+                          <p>Member since: ${profile.joinDate || 'N/A'}</p>
+                      </div>
+                  </div>
+              `;
+          }
+
+          async function loadTabContent(tabId) {
+              const storedEmail = localStorage.getItem('userEmail');
+              try {
+                  const response = await fetch(`${API_URL}/${tabId}`, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({ email: storedEmail })
+                  });
+                  const data = await response.json();
+                  
+                  switch(tabId) {
+                      case 'dashboard':
+                          updateDashboard(data);
+                          break;
+                      case 'templates':
+                          document.getElementById('templatesList').innerHTML = data.templates.map(template => `
+                              <div class="template-item">
+                                  <h4>${template.name}</h4>
+                                  <p>${template.description}</p>
+                              </div>
+                          `).join('');
+                          break;
+                      case 'snippets':
+                          document.getElementById('snippetsList').innerHTML = data.codeSnippets.map(snippet => `
+                              <div class="snippet-item">
+                                  <h4>${snippet.title || 'Untitled'}</h4>
+                                  <p>ID: ${snippet.id || 'none'}</p>
+                                  <pre><code>${snippet.code || 'No code available'}</code></pre>
+                              </div>
+                          `).join('');
+                          break;
+                      case 'hire':
+                          document.getElementById('developersList').innerHTML = renderDevelopers(data);
+                          break;
+                      case 'courses':
+                          document.getElementById('coursesList').innerHTML = renderCourses(data.courses);
+                          break;
+                      case 'settings':
+                          document.getElementById('settingsContent').innerHTML = renderSettings(data.settings);
+                          break;
+                      case 'subscription':
+                          document.getElementById('subscriptionPlans').innerHTML = renderSubscription(data.subscription);
+                          break;
+                      case 'profile':
+                          document.getElementById('profileContent').innerHTML = renderProfile(data.profile);
+                          break;
+                  }
+              } catch (error) {
+                  console.error(`Error loading ${tabId} data:`, error);
+              }
+          }
+
+          function updateDashboard(data) {
+              document.getElementById('activeProjects').textContent = data.activeProjects?.length || 0;
+              document.getElementById('projectsGrowth').textContent = '0%';
+              document.getElementById('totalBudget').textContent = (data.balance || 0).toFixed(2);
+              document.getElementById('budgetGrowth').textContent = '0%';
+              document.getElementById('completedTasks').textContent = data.completedTasks?.length || 0;
+              document.getElementById('tasksStatus').textContent = 'On Track';
+
+              const projectList = document.getElementById('projectList');
+              projectList.innerHTML = (data.activeProjects || []).map(project => `
+                  <div class="project-item" style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                      <div>
+                          <h4 style="color: #333;">${project.name || 'Untitled Project'}</h4>
+                          <p style="color: #666; font-size: 0.9rem;">ID: ${project.id || 'none'}</p>
+                      </div>
+                      <span class="status" style="background: ${project.status === 'In Progress' ? '#e8f5e9' : '#fff3e0'}; 
+                          color: ${project.status === 'In Progress' ? '#28a745' : '#f57c00'}; 
+                          padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">${project.status || 'Unknown'}</span>
+                  </div>
+              `).join('');
+
+              const teamList = document.getElementById('teamList');
+              teamList.innerHTML = `
+                  <div class="team-member" style="display: flex; align-items: center; margin-bottom: 15px;">
+                      <img src="${data.profile?.profilePicture || 'default-avatar.png'}" alt="Profile Picture" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                      <div>
+                          <h4 style="color: #333; font-size: 0.9rem;">${data.profile?.email || 'Unknown User'}</h4>
+                          <p style="color: #666; font-size: 0.8rem;">Account Status: ${data.accountStatus || 'active'}</p>
+                      </div>
+                  </div>
+              `;
+          }
+
+          // Initial load of dashboard tab content
+          loadTabContent('dashboard');
+
+          </script>      
+      </body>
+  </html>
