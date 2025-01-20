@@ -251,7 +251,7 @@
         if (userData && userData.loginState === true) {
           clearInterval(interval);  // Stop retrying
           localStorage.setItem('userEmail', email); // Save email to local storage
-          window.location.href = 'https://app.swiftech.me';  // Redirect to app
+          window.location.href = 'https://app.swifttech.me';  // Redirect to app
           return;
         } else if (userData.exists) {
           // User exists but not active, send login link
@@ -312,7 +312,7 @@
           if (data.loginState === true) {
             clearInterval(interval);  // Stop retrying
             localStorage.setItem('userEmail', email); // Save email to local storage
-            window.location.href = 'https://app.swiftech.me';  // Redirect to app
+            window.location.href = 'https://app.swifttech.me';  // Redirect to app
           } else {
             console.log('Login state is false, retrying...');
           }
@@ -338,7 +338,7 @@
 
           const userData = await response.json();
           if (userData.exists && userData.active) {
-            window.location.href = 'https://app.swiftech.me';
+            window.location.href = 'https://app.swifttech.me';
           }
         } catch (error) {
           console.error('Error checking login status:', error);
