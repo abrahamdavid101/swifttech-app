@@ -249,10 +249,6 @@
           credentials: 'include'
         });
 
-        if (!checkUserResponse.ok) {
-          throw new Error(`Server error: ${await checkUserResponse.text()}`);
-        }
-
         const userData = await checkUserResponse.json();
 
         if (userData.error) {
@@ -278,9 +274,7 @@
       // Reset submit button after response
       submitButton.innerHTML = 'Send Login Link';
       submitButton.disabled = false;
-    }    
-
-
+    }
 // Function to send login link
     async function sendLoginLink(email) {
       try {
