@@ -237,7 +237,7 @@
 
       try {
         // First check if user exists and their active status
-        const checkUserResponse = await fetch('https://swifttech-server.onrender.com/check-user', {
+        const checkUserResponse = await fetch('https://swifttech-server.onrender.com/check-user-account', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -245,8 +245,7 @@
           },
           body: JSON.stringify({ 
             email: email.toLowerCase().trim()
-          }),
-          credentials: 'include'
+          })
         });
 
         const userData = await checkUserResponse.json();
@@ -277,7 +276,8 @@
       // Reset submit button after response
       submitButton.innerHTML = 'Send Login Link';
       submitButton.disabled = false;
-    }// Function to send login link
+    }    
+    // Function to send login link
     async function sendLoginLink(email) {
       try {
         const response = await fetch('https://swifttech-server.onrender.com/send-login-link', {
