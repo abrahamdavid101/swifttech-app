@@ -352,13 +352,16 @@
 
               const renderTemplateCards = (templatesData) => {
                   templatesGrid.innerHTML = Object.values(templatesData).map(template => {
-                      const planValues = {
-                          'free': 1,
-                          'premium': 2,
-                          'gold': 3
-                      };
-                      const userPlanValue = planValues[userPlan];
+                      const planValues = { 'free': 1, 'premium': 2, 'gold': 3 };
+                      const userPlanValue = planValues[userPlan] || 1;
                       const isAccessible = userPlanValue >= template.plan;
+
+                      const planBadge = template.plan === 1 ? 
+                          '<span class="badge bg-success">Free</span>' :
+                          template.plan === 2 ? 
+                          '<span class="badge bg-primary">Premium</span>' :
+                          '<span class="badge bg-warning">Gold</span>';
+
                       const cardOpacity = isAccessible ? '1' : '0.7';
                       const cardPointerEvents = isAccessible ? 'auto' : 'none';
                       const buttonStyle = `
@@ -437,8 +440,7 @@
               });
 
               renderTemplateCards(templates);
-          }
-          
+          }          
           
           async function renderSnippets(snippets) {
               const userPlan = localStorage.getItem('userPlan') || 'free';
