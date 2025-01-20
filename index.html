@@ -317,7 +317,33 @@
                   }
               }
 
-          checkAuthState();                   
+          checkAuthState();  
+          
+          async function getUserSubscriptionPlan() {
+                        const storedEmail = localStorage.getItem('userEmail');
+                        try {
+                            const response = await fetch(`${API_URL}/subscription-plan`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ email: storedEmail })
+                            });
+                            
+                            if (!response.ok) {
+                                throw new Error('Failed to fetch subscription plan');
+                            }
+                            
+                            const data = await response.json();
+                            localStorage.setItem('userPlan', data.plan || 'free');
+                            return data.plan || 'free'; // Returns 'free' as default if plan is not specified
+                        } catch (error) {
+                            console.error('Error fetching user subscription plan:', error);
+                            localStorage.setItem('userPlan', 'free');
+                            return 'free'; // Returns 'free' as fallback in case of error
+                        }
+                    }
+          
 
           document.querySelectorAll('.nav-item').forEach(item => {
               item.addEventListener('click', () => {
@@ -333,7 +359,7 @@
           });
 
           async function renderTemplates(templates) {
-              const userPlan = await getUserSubscriptionPlan();
+              const userPlan = localStorage.getItem('userPlan') || 'free';
               const templatesList = document.getElementById('templatesList');
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
@@ -404,7 +430,7 @@
           }
 
           async function renderSnippets(snippets) {
-              const userPlan = await getUserSubscriptionPlan();
+              const userPlan = localStorage.getItem('userPlan') || 'free';
               const snippetsList = document.getElementById('snippetsList');
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
@@ -477,7 +503,7 @@
           }
 
           async function renderCourses(courses) {
-              const userPlan = await getUserSubscriptionPlan();
+              const userPlan = localStorage.getItem('userPlan') || 'free';
               const coursesList = document.getElementById('coursesList');
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
@@ -546,30 +572,7 @@
 
               renderCourseCards(courses);
           }
-          async function getUserSubscriptionPlan() {
-              const storedEmail = localStorage.getItem('userEmail');
-              try {
-                  const response = await fetch(`${API_URL}/subscription-plan`, {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify({ email: storedEmail })
-                  });
-          
-                  if (!response.ok) {
-                      throw new Error('Failed to fetch subscription plan');
-                  }
-          
-                  const data = await response.json();
-                  return data.plan || 'free'; // Returns 'free' as default if plan is not specified
-              } catch (error) {
-                  console.error('Error fetching user subscription plan:', error);
-                  return 'free'; // Returns 'free' as fallback in case of error
-              }
-          }
-          
-          async function loadTabContent(tabId) {
+                   async function loadTabContent(tabId) {
               const storedEmail = localStorage.getItem('userEmail');
               try {
                   const response = await fetch(`${API_URL}/${tabId}`, {
