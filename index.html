@@ -362,25 +362,25 @@
                                   <p>${template.description}</p>
                                   <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                                       <span>${template.isFree ? 'Free' : template.price}</span>
-                                      <span class="badge bg-info">${template.plan === 1 ? 'Free' : template.plan === 2 ? 'Premium' : 'Gold'}</span>
+                                      <span>⭐ ${template.ratings.average} (${template.ratings.reviews})</span>
                                   </div>
                                   <div style="margin-top: 10px;">
-                                      ${template.tags.map(tag => `<span class="badge bg-light text-dark me-1">${tag}</span>`).join('')}
+                                      ${template.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
                                   </div>
-                                  <div class="btn-group w-100 mt-3">
-                                      <a href="${template.previewURL}" class="btn btn-outline-primary" title="Preview">
-                                          <i class="bi bi-eye-fill"></i>
-                                      </a>
+                                  <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                      <button onclick="previewTemplate('${template.id}')" class="btn btn-outline-primary" style="flex: 1;">
+                                          <i class="fas fa-eye"></i> Preview
+                                      </button>
                                       ${isAccessible ? `
-                                          <a href="${template.downloadURL}" class="btn btn-primary" title="Download">
-                                              <i class="bi bi-download"></i>
-                                          </a>
-                                          <button onclick="navigator.clipboard.writeText('${template.id}')" class="btn btn-secondary" title="Copy ID">
-                                              <i class="bi bi-clipboard"></i>
+                                          <button onclick="downloadTemplate('${template.id}')" class="btn btn-primary" style="flex: 1;">
+                                              <i class="fas fa-download"></i> Download
+                                          </button>
+                                          <button onclick="copyTemplateId('${template.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
+                                              <i class="fas fa-copy"></i>
                                           </button>
                                       ` : `
-                                          <button class="btn btn-secondary" disabled title="Upgrade Required">
-                                              <i class="bi bi-lock-fill"></i>
+                                          <button class="btn btn-secondary" disabled style="flex: 1;">
+                                              <i class="fas fa-lock"></i> Upgrade Required
                                           </button>
                                       `}
                                   </div>
@@ -430,28 +430,30 @@
                               <div style="padding: 15px;">
                                   <h4>${snippet.name}</h4>
                                   <p>${snippet.description}</p>
-                                  <div class="badge bg-secondary mb-2">${snippet.language}</div>
+                                  <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                      <code>${snippet.language}</code>
+                                  </div>
                                   <div style="display: flex; justify-content: space-between; align-items: center;">
                                       <span>${snippet.isFree ? 'Free' : snippet.price}</span>
-                                      <span class="badge bg-info">${snippet.plan === 1 ? 'Free' : snippet.plan === 2 ? 'Premium' : 'Gold'}</span>
+                                      <span>⭐ ${snippet.ratings.average} (${snippet.ratings.reviews})</span>
                                   </div>
                                   <div style="margin-top: 10px;">
-                                      ${snippet.tags.map(tag => `<span class="badge bg-light text-dark me-1">${tag}</span>`).join('')}
+                                      ${snippet.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
                                   </div>
-                                  <div class="btn-group w-100 mt-3">
-                                      <a href="${snippet.previewURL}" class="btn btn-outline-primary" title="Preview">
-                                          <i class="bi bi-eye-fill"></i>
-                                      </a>
+                                  <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                      <button onclick="previewSnippet('${snippet.id}')" class="btn btn-outline-primary" style="flex: 1;">
+                                          <i class="fas fa-eye"></i> Preview
+                                      </button>
                                       ${isAccessible ? `
-                                          <a href="${snippet.downloadURL}" class="btn btn-primary" title="Download">
-                                              <i class="bi bi-download"></i>
-                                          </a>
-                                          <button onclick="navigator.clipboard.writeText('${snippet.id}')" class="btn btn-secondary" title="Copy ID">
-                                              <i class="bi bi-clipboard"></i>
+                                          <button onclick="downloadSnippet('${snippet.id}')" class="btn btn-primary" style="flex: 1;">
+                                              <i class="fas fa-download"></i> Download
+                                          </button>
+                                          <button onclick="copySnippetId('${snippet.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
+                                              <i class="fas fa-copy"></i>
                                           </button>
                                       ` : `
-                                          <button class="btn btn-secondary" disabled title="Upgrade Required">
-                                              <i class="bi bi-lock-fill"></i>
+                                          <button class="btn btn-secondary" disabled style="flex: 1;">
+                                              <i class="fas fa-lock"></i> Upgrade Required
                                           </button>
                                       `}
                                   </div>
@@ -504,25 +506,25 @@
                                   <p>${course.description}</p>
                                   <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                                       <span>${course.isFree ? 'Free' : course.price}</span>
-                                      <span class="badge bg-info">${course.plan === 1 ? 'Free' : course.plan === 2 ? 'Premium' : 'Gold'}</span>
+                                      <span>⭐ ${course.ratings.average} (${course.ratings.reviews})</span>
                                   </div>
                                   <div style="margin-top: 10px;">
-                                      ${course.tags.map(tag => `<span class="badge bg-light text-dark me-1">${tag}</span>`).join('')}
+                                      ${course.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
                                   </div>
-                                  <div class="btn-group w-100 mt-3">
-                                      <a href="${course.previewURL}" class="btn btn-outline-primary" title="Preview">
-                                          <i class="bi bi-eye-fill"></i>
-                                      </a>
+                                  <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                      <button onclick="previewCourse('${course.id}')" class="btn btn-outline-primary" style="flex: 1;">
+                                          <i class="fas fa-eye"></i> Preview
+                                      </button>
                                       ${isAccessible ? `
-                                          <a href="${course.startLink}" class="btn btn-primary" title="Start Course">
-                                              <i class="bi bi-play-fill"></i>
-                                          </a>
-                                          <button onclick="navigator.clipboard.writeText('${course.id}')" class="btn btn-secondary" title="Copy ID">
-                                              <i class="bi bi-clipboard"></i>
+                                          <button onclick="startCourse('${course.id}')" class="btn btn-primary" style="flex: 1;">
+                                              <i class="fas fa-play"></i> Start Course
+                                          </button>
+                                          <button onclick="copyCourseId('${course.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
+                                              <i class="fas fa-copy"></i>
                                           </button>
                                       ` : `
-                                          <button class="btn btn-secondary" disabled title="Upgrade Required">
-                                              <i class="bi bi-lock-fill"></i>
+                                          <button class="btn btn-secondary" disabled style="flex: 1;">
+                                              <i class="fas fa-lock"></i> Upgrade Required
                                           </button>
                                       `}
                                   </div>
@@ -560,12 +562,13 @@
                   }
           
                   const data = await response.json();
-                  return data.plan || 'free';
+                  return data.plan || 'free'; // Returns 'free' as default if plan is not specified
               } catch (error) {
                   console.error('Error fetching user subscription plan:', error);
-                  return 'free';
+                  return 'free'; // Returns 'free' as fallback in case of error
               }
-          }          
+          }
+          
           async function loadTabContent(tabId) {
               const storedEmail = localStorage.getItem('userEmail');
               try {
