@@ -564,14 +564,6 @@
                           updateDashboard(data);
                           break;
                       case 'templates':
-                          if (data && data.plan) {
-                              try {
-                                  localStorage.setItem('userPlan', data.plan);
-                                  console.log('User plan updated:', data.plan);
-                              } catch (error) {
-                                  console.error('Error saving user plan:', error);
-                              }
-                          }
                           renderTemplates(data.swifttech.templates);
                           break;
                       case 'snippets':
@@ -596,6 +588,7 @@
           }
 
           function updateDashboard(data) {
+              localStorage.setItem('userPlan', data.plan);
               document.getElementById('activeProjects').textContent = data.activeProjects?.length || 0;
               document.getElementById('projectsGrowth').textContent = '0%';
               document.getElementById('totalBudget').textContent = (data.balance || 0).toFixed(2);
