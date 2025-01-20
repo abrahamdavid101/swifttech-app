@@ -351,37 +351,51 @@
 
               const renderTemplateCards = (templatesData) => {
                   templatesGrid.innerHTML = Object.values(templatesData).map(template => {
-                      const isAccessible = template.isFree || 
+                      const isAccessible = userPlan === 'gold' || 
                           (userPlan === 'premium' && template.plan <= 2) || 
-                          (userPlan === 'gold' && template.plan <= 3);
+                          (userPlan === 'free' && template.plan === 1);
+
+                      const planBadge = template.plan === 1 ? 
+                          '<span class="badge bg-success"><i class="fas fa-star"></i> Free</span>' :
+                          template.plan === 2 ? 
+                          '<span class="badge bg-primary"><i class="fas fa-crown"></i> Premium</span>' :
+                          '<span class="badge bg-warning"><i class="fas fa-gem"></i> Gold</span>';
 
                       return `
-                          <div class="template-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
-                              <img src="${template.imageURL}" alt="${template.name}" style="width: 100%; height: 200px; object-fit: cover;">
-                              <div style="padding: 15px;">
-                                  <h4>${template.name}</h4>
-                                  <p>${template.description}</p>
-                                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                      <span>${template.isFree ? 'Free' : template.price}</span>
-                                      <span>⭐ ${template.ratings.average} (${template.ratings.reviews})</span>
+                          <div class="template-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                              <div class="position-relative">
+                                  <img src="${template.imageURL}" alt="${template.name}" style="width: 100%; height: 200px; object-fit: cover;">
+                                  <div style="position: absolute; top: 10px; right: 10px;">
+                                      ${planBadge}
                                   </div>
-                                  <div style="margin-top: 10px;">
-                                      ${template.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                              </div>
+                              <div style="padding: 20px;">
+                                  <h4 style="margin-bottom: 10px; color: #333;">${template.name}</h4>
+                                  <p style="color: #666; font-size: 0.9em;">${template.description}</p>
+                                  <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                                      <div style="display: flex; align-items: center;">
+                                          <i class="fas fa-star" style="color: #ffc107; margin-right: 5px;"></i>
+                                          <span>${template.ratings.average}</span>
+                                          <span style="color: #666; margin-left: 5px;">(${template.ratings.reviews})</span>
+                                      </div>
                                   </div>
-                                  <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                      <button onclick="previewTemplate('${template.id}')" class="btn btn-outline-primary" style="flex: 1;">
+                                  <div style="margin: 15px 0;">
+                                      ${template.tags.map(tag => `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;"><i class="fas fa-tag" style="margin-right: 5px;"></i>${tag}</span>`).join('')}
+                                  </div>
+                                  <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                      <button onclick="previewTemplate('${template.id}')" class="btn btn-outline-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
                                           <i class="fas fa-eye"></i> Preview
                                       </button>
                                       ${isAccessible ? `
-                                          <button onclick="downloadTemplate('${template.id}')" class="btn btn-primary" style="flex: 1;">
+                                          <button onclick="downloadTemplate('${template.id}')" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
                                               <i class="fas fa-download"></i> Download
                                           </button>
                                           <button onclick="copyTemplateId('${template.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
                                               <i class="fas fa-copy"></i>
                                           </button>
                                       ` : `
-                                          <button class="btn btn-secondary" disabled style="flex: 1;">
-                                              <i class="fas fa-lock"></i> Upgrade Required
+                                          <button class="btn btn-warning" onclick="showUpgradeModal()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                              <i class="fas fa-lock"></i> Upgrade to ${template.plan === 2 ? 'Premium' : 'Gold'}
                                           </button>
                                       `}
                                   </div>
@@ -403,7 +417,6 @@
 
               renderTemplateCards(templates);
           }
-
           async function renderSnippets(snippets) {
               const userPlan = localStorage.getItem('userPlan') || 'free';
               const snippetsList = document.getElementById('snippetsList');
