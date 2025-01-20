@@ -559,14 +559,11 @@
                   });
                   const data = await response.json();
                   
-                  // Save user data to localStorage
-                  localStorage.setItem('userData', JSON.stringify({
-                      accountStatus: "active",
-                      activeProjects: data.activeProjects || [],
-                      balance: data.balance || 0,
-                      plan: "premium"
-                  }));
-
+                  // Save user plan to localStorage
+                  if (data.plan) {
+                      localStorage.setItem('userPlan', data.plan);
+                  }
+                  
                   switch(tabId) {
                       case 'dashboard':
                           updateDashboard(data);
