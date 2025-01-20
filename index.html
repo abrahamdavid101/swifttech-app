@@ -354,11 +354,12 @@
                   templatesGrid.innerHTML = Object.values(templatesData).map(template => {
                       const planValues = { 'free': 1, 'premium': 2, 'gold': 3 };
                       const userPlanValue = planValues[userPlan] || 1;
-                      const isAccessible = userPlanValue >= template.plan;
+                      const templatePlanValue = planValues[template.plan] || 1;
+                      const isAccessible = userPlanValue >= templatePlanValue;
 
-                      const planBadge = template.plan === 1 ? 
+                      const planBadge = template.plan === 'free' ? 
                           '<span class="badge bg-success">Free</span>' :
-                          template.plan === 2 ? 
+                          template.plan === 'premium' ? 
                           '<span class="badge bg-primary">Premium</span>' :
                           '<span class="badge bg-warning">Gold</span>';
 
@@ -405,6 +406,11 @@
                                       ${template.tags.map(tag => `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${tag}</span>`).join('')}
                                   </div>
                                   <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                                      <div style="text-align: center; padding: 8px; background: ${template.plan === free ? '#e8f5e9' : template.plan === premium ? '#e3f2fd' : '#fff3e0'}; border-radius: 6px; margin-bottom: 10px;">
+                                          <span style="font-family: 'Montserrat', sans-serif; font-size: 0.9em; color: ${template.plan === free ? '#2e7d32' : template.plan === premium ? '#1565c0' : '#f57c00'}; font-weight: 500;">
+                                              ${template.plan === free ? 'Free Plan' : template.plan === premium ? 'Premium Plan' : 'Gold Plan'}
+                                          </span>
+                                      </div>
                                       <button onclick="previewTemplate('${template.id}')" 
                                           style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
                                           Preview
