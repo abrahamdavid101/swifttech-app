@@ -248,28 +248,31 @@
 
         const userData = await checkUserResponse.json();
 
-        if (userData && userData.loginState === true) {
-          clearInterval(interval);  // Stop retrying
-          localStorage.setItem('userEmail', email); // Save email to local storage
-          window.location.href = 'https://app.swifttech.me';  // Redirect to app
+        if (userData.error) {
+          throw new Error(userData.error);
+        }
+
+        if (userData.exists && userData.loginState) {
+          localStorage.setItem('userEmail', userData.email);
+          window.location.href = userData.redirect;
           return;
-        } else if (userData.exists) {
-          // User exists but not active, send login link
-          await sendLoginLink(email);
         } else {
-          // User doesn't exist, send login link
+          // User either doesn't exist or is not active, send login link
           await sendLoginLink(email);
         }
 
       } catch (error) {
         document.getElementById('result').innerHTML = 'Error: ' + error.message;
+        submitButton.innerHTML = 'Send Login Link'; // Ensure button is reset on error
+        submitButton.disabled = false;
+        return;
       }
 
       // Reset submit button after response
       submitButton.innerHTML = 'Send Login Link';
       submitButton.disabled = false;
-    }
-
+    }    
+    
     // Function to send login link
     async function sendLoginLink(email) {
       try {
