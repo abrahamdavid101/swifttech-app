@@ -280,10 +280,10 @@
           async function checkAuthState() {
               const storedEmail = localStorage.getItem('userEmail');
               
-              console.log('Stored email:', storedEmail); // Debug log
+              console.log('Stored email:', storedEmail);
               
               if (!storedEmail || storedEmail === 'null' || storedEmail === 'undefined' || !storedEmail.includes('@')) {
-                  console.log('Invalid email - redirecting to login'); // Debug log
+                  console.log('Invalid email - redirecting to login');
                   localStorage.clear();
                   setTimeout(() => {
                       window.location.href = 'login.html';
@@ -317,9 +317,8 @@
                   }
               }
 
-          // Run auth check before loading dashboard
           checkAuthState();                   
-          // Tab switching functionality
+
           document.querySelectorAll('.nav-item').forEach(item => {
               item.addEventListener('click', () => {
                   document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
@@ -333,91 +332,147 @@
               });
           });
 
-          function renderDevelopers(data) {
-              if (!data || !data.developers || !Array.isArray(data.developers)) {
-                  return '<p>No developers available</p>';
-              }
-              return data.developers.map(dev => `
-                  <div class="developer-card">
-                      <h4>${dev.name}</h4>
-                      <p>Skills: ${dev.skills.join(', ')}</p>
-                      <p>Experience: ${dev.experience} years</p>
-                      <p>Rate: ${dev.hourlyRate}/hour</p>
-                  </div>
-              `).join('');
+          function renderTemplates(templates) {
+              const templatesList = document.getElementById('templatesList');
+              const searchInput = document.createElement('input');
+              searchInput.type = 'text';
+              searchInput.placeholder = 'Search templates...';
+              searchInput.className = 'search-input';
+              searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;';
+              
+              const templatesGrid = document.createElement('div');
+              templatesGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';
+              
+              templatesList.innerHTML = '';
+              templatesList.appendChild(searchInput);
+              templatesList.appendChild(templatesGrid);
+
+              const renderTemplateCards = (templatesData) => {
+                  templatesGrid.innerHTML = Object.values(templatesData).map(template => `
+                      <div class="template-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
+                          <img src="${template.imageURL}" alt="${template.name}" style="width: 100%; height: 200px; object-fit: cover;">
+                          <div style="padding: 15px;">
+                              <h4>${template.name}</h4>
+                              <p>${template.description}</p>
+                              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                                  <span>${template.isFree ? 'Free' : '$' + template.price}</span>
+                                  <span>⭐ ${template.ratings.average} (${template.ratings.reviews})</span>
+                              </div>
+                              <div style="margin-top: 10px;">
+                                  ${template.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                              </div>
+                          </div>
+                      </div>
+                  `).join('');
+              };
+
+              searchInput.addEventListener('input', (e) => {
+                  const searchTerm = e.target.value.toLowerCase();
+                  const filteredTemplates = Object.values(templates).filter(template => 
+                      template.name.toLowerCase().includes(searchTerm) || 
+                      template.description.toLowerCase().includes(searchTerm) ||
+                      template.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                  );
+                  renderTemplateCards(filteredTemplates);
+              });
+
+              renderTemplateCards(templates);
+          }
+
+          function renderSnippets(snippets) {
+              const snippetsList = document.getElementById('snippetsList');
+              const searchInput = document.createElement('input');
+              searchInput.type = 'text';
+              searchInput.placeholder = 'Search code snippets...';
+              searchInput.className = 'search-input';
+              searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;';
+              
+              const snippetsGrid = document.createElement('div');
+              snippetsGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';
+              
+              snippetsList.innerHTML = '';
+              snippetsList.appendChild(searchInput);
+              snippetsList.appendChild(snippetsGrid);
+
+              const renderSnippetCards = (snippetsData) => {
+                  snippetsGrid.innerHTML = Object.values(snippetsData).map(snippet => `
+                      <div class="snippet-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
+                          <div style="padding: 15px;">
+                              <h4>${snippet.name}</h4>
+                              <p>${snippet.description}</p>
+                              <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                  <code>${snippet.language}</code>
+                              </div>
+                              <div style="display: flex; justify-content: space-between; align-items: center;">
+                                  <span>${snippet.isFree ? 'Free' : '$' + snippet.price}</span>
+                                  <span>⭐ ${snippet.ratings.average} (${snippet.ratings.reviews})</span>
+                              </div>
+                              <div style="margin-top: 10px;">
+                                  ${snippet.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                              </div>
+                          </div>
+                      </div>
+                  `).join('');
+              };
+
+              searchInput.addEventListener('input', (e) => {
+                  const searchTerm = e.target.value.toLowerCase();
+                  const filteredSnippets = Object.values(snippets).filter(snippet => 
+                      snippet.name.toLowerCase().includes(searchTerm) || 
+                      snippet.description.toLowerCase().includes(searchTerm) ||
+                      snippet.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                  );
+                  renderSnippetCards(filteredSnippets);
+              });
+
+              renderSnippetCards(snippets);
           }
 
           function renderCourses(courses) {
-              if (!courses || !Array.isArray(courses)) {
-                  return '<p>No courses available</p>';
-              }
-              return courses.map(course => `
-                  <div class="course-card">
-                      <h4>${course.title}</h4>
-                      <p>${course.description}</p>
-                      <p>Duration: ${course.duration}</p>
-                      <p>Price: ${course.price}</p>
-                  </div>
-              `).join('');
-          }
+              const coursesList = document.getElementById('coursesList');
+              const searchInput = document.createElement('input');
+              searchInput.type = 'text';
+              searchInput.placeholder = 'Search courses...';
+              searchInput.className = 'search-input';
+              searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;';
+              
+              const coursesGrid = document.createElement('div');
+              coursesGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';
+              
+              coursesList.innerHTML = '';
+              coursesList.appendChild(searchInput);
+              coursesList.appendChild(coursesGrid);
 
-          function renderSettings(settings) {
-              return `
-                  <div class="settings-container">
-                      <div class="setting-item">
-                          <h4>Notifications</h4>
-                          <label><input type="checkbox" ${settings.notifications ? 'checked' : ''}> Enable notifications</label>
-                      </div>
-                      <div class="setting-item">
-                          <h4>Theme</h4>
-                          <select>
-                              <option ${settings.theme === 'light' ? 'selected' : ''}>Light</option>
-                              <option ${settings.theme === 'dark' ? 'selected' : ''}>Dark</option>
-                          </select>
-                      </div>
-                  </div>
-              `;
-          }
-
-          function renderSubscription(subscription) {
-              if (!subscription || !subscription.availablePlans || !Array.isArray(subscription.availablePlans)) {
-                  return '<p>No subscription plans available</p>';
-              }
-              return `
-                  <div class="subscription-container">
-                      <div class="current-plan">
-                          <h4>Current Plan: ${subscription.currentPlan}</h4>
-                          <p>Status: ${subscription.status}</p>
-                          <p>Next billing date: ${subscription.nextBillingDate}</p>
-                      </div>
-                      <div class="available-plans">
-                          ${subscription.availablePlans.map(plan => `
-                              <div class="plan-card">
-                                  <h4>${plan.name}</h4>
-                                  <p>${plan.description}</p>
-                                  <p>Price: ${plan.price}/month</p>
+              const renderCourseCards = (coursesData) => {
+                  coursesGrid.innerHTML = Object.values(coursesData).map(course => `
+                      <div class="course-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
+                          <img src="${course.imageURL}" alt="${course.name}" style="width: 100%; height: 200px; object-fit: cover;">
+                          <div style="padding: 15px;">
+                              <h4>${course.name}</h4>
+                              <p>${course.description}</p>
+                              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                                  <span>${course.isFree ? 'Free' : '$' + course.price}</span>
+                                  <span>⭐ ${course.ratings.average} (${course.ratings.reviews})</span>
                               </div>
-                          `).join('')}
+                              <div style="margin-top: 10px;">
+                                  ${course.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                              </div>
+                          </div>
                       </div>
-                  </div>
-              `;
-          }
+                  `).join('');
+              };
 
-          function renderProfile(profile) {
-              return `
-                  <div class="profile-container">
-                      <div class="profile-header">
-                          <img src="${profile.avatar || 'default-avatar.jpg'}" alt="Profile Picture" class="profile-avatar" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
-                          <h4>${profile.name || 'User'}</h4>
-                      </div>
-                      <div class="profile-details">
-                          <p>Email: ${profile.email}</p>
-                          <p>Account Status: ${profile.accountStatus || 'active'}</p>
-                          <p>Balance: $${profile.balance || 0}</p>
-                          <p>Member since: ${profile.joinDate || 'N/A'}</p>
-                      </div>
-                  </div>
-              `;
+              searchInput.addEventListener('input', (e) => {
+                  const searchTerm = e.target.value.toLowerCase();
+                  const filteredCourses = Object.values(courses).filter(course => 
+                      course.name.toLowerCase().includes(searchTerm) || 
+                      course.description.toLowerCase().includes(searchTerm) ||
+                      course.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                  );
+                  renderCourseCards(filteredCourses);
+              });
+
+              renderCourseCards(courses);
           }
 
           async function loadTabContent(tabId) {
@@ -437,27 +492,13 @@
                           updateDashboard(data);
                           break;
                       case 'templates':
-                          document.getElementById('templatesList').innerHTML = data.templates.map(template => `
-                              <div class="template-item">
-                                  <h4>${template.name}</h4>
-                                  <p>${template.description}</p>
-                              </div>
-                          `).join('');
+                          renderTemplates(data.swifttech.templates);
                           break;
                       case 'snippets':
-                          document.getElementById('snippetsList').innerHTML = data.codeSnippets.map(snippet => `
-                              <div class="snippet-item">
-                                  <h4>${snippet.title || 'Untitled'}</h4>
-                                  <p>ID: ${snippet.id || 'none'}</p>
-                                  <pre><code>${snippet.code || 'No code available'}</code></pre>
-                              </div>
-                          `).join('');
-                          break;
-                      case 'hire':
-                          document.getElementById('developersList').innerHTML = renderDevelopers(data);
+                          renderSnippets(data.swifttech.snippets);
                           break;
                       case 'courses':
-                          document.getElementById('coursesList').innerHTML = renderCourses(data.courses);
+                          renderCourses(data.swifttech.courses);
                           break;
                       case 'settings':
                           document.getElementById('settingsContent').innerHTML = renderSettings(data.settings);
@@ -507,9 +548,7 @@
               `;
           }
 
-          // Initial load of dashboard tab content
           loadTabContent('dashboard');
-
           </script>      
       </body>
   </html>
