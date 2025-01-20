@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in/ Log in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.png" type="image/x-icon">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Montserrat', sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .logo {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 0px;
+    }
+    .container {
+      background: white;
+      padding: clamp(15px, 4vw, 30px);
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: min(90%, 400px);
+      margin: 3px auto 0 auto;
+      position: sticky;
+      top: 3px;
+    }
+    h2 {
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      margin: 0px 0;
+      color: #666;
+    }
+    .signup-link {
+      margin: 15px 0 25px 0;
+      color: #666;
+      font-size: clamp(0.9rem, 3vw, 1rem);
+    }
+    .signup-link a {
+      color: #6b9fed;
+      text-decoration: none;
+    }
+    .auth-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      color: #666;
+      padding: 12px;
+      border-radius: 5px;
+      width: 100%;
+      margin: 10px 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(0.9rem, 3vw, 1rem);
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+    .auth-button img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+    .cool-pattern {
+      margin-top: 30px;
+      height: 5px;
+      width: 100%;
+      background: linear-gradient(90deg, #6b9fed, #7fb587, #f3d485, #e88e85);
+      border-radius: 5px;
+    }
+    .facebook-btn {
+      background: white;
+      border: 1px solid #ddd;
+    }
+    .facebook-btn.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: clamp(0.9rem, 3vw, 1rem);
+      word-break: break-word;
+      color: #2196F3; /* Blue color for error messages */
+    }
+    .terms-privacy {
+      margin-top: 15px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .terms-privacy a {
+      color: #6b9fed;
+      text-decoration: none;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #ddd;
+    }
+    .divider span {
+      padding: 0 10px;
+      color: #666;
+      font-size: 14px;
+    }
+    .auth-form {
+      width: 100%;
+      margin: 10px 0;
+    }
+    .auth-input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif; /* Apply Montserrat font to the input */
+    }
+    .email-btn {
+      background-color: #2196F3;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .email-btn:hover {
+      background-color: #1976D2;
+    }
+    /* Spinner CSS */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://www.swifttech.me/favicon.png" alt="Logo" class="logo">
+    <h2>Log into your account</h2>
+    <p class="signup-link">Don't have an account? <a href="#" onclick="document.getElementById('email').focus(); return false;">Sign up</a></p>
+
+    <div id="g_id_onload"
+         data-client_id="730968117574-fkh9kua3kdu769n35l5060ek1f620alp.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="Sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+    </div>
+    
+    <!-- Disabled Google Button -->
+<button class="auth-button google-btn" disabled
+        style="cursor: not-allowed; font-family: 'Montserrat', sans-serif; opacity: 0.6;">
+  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+       alt="Google Logo" 
+       style="width: 20px; height: 20px; margin-right: 10px;">
+  Continue with Google
+</button>
+    
+    <button class="auth-button facebook-btn disabled" disabled>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" alt="Facebook Logo">
+      Facebook
+    </button>    
+
+    <div class="divider">
+      <span>Or continue with email</span>
+    </div>
+    <form id="emailLoginForm" class="auth-form" onsubmit="handleEmailLogin(event)">
+      <input type="email" id="email" placeholder="Email address" class="auth-input" required>
+      <button type="submit" class="auth-button email-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+        </svg>
+        Send Login Link
+      </button>
+    </form>
+
+    <div id="result"></div>
+
+    <div class="cool-pattern"></div>
+
+    <p class="terms-privacy">
+      By signing in, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>
+    </p>
+  </div>
+
+  <script>
+    // Handle email login
+    async function handleEmailLogin(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('email');
+      const email = emailInput.value;
+      
+      // Email validation
+      if (!email) {
+        document.getElementById('result').innerHTML = 'Please enter an email address';
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        document.getElementById('result').innerHTML = 'Please enter a valid email address';
+        return;
+      }
+
+      // Check if email exists in localStorage
+      const storedEmail = localStorage.getItem('userEmail');
+      if (storedEmail === email) {
+        document.getElementById('result').innerHTML = 'Checking login state...';
+        checkLoginState(email);
+        return;
+      }
+
+      // Show loading spinner
+      const submitButton = document.querySelector('.email-btn');
+      submitButton.innerHTML = '<div class="spinner"></div>';
+      submitButton.disabled = true;
+
+      try {
+        // Send request to server to send login link
+        const response = await fetch('https://swifttech-server.onrender.com/send-login-link', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        if (response.ok) {
+          document.getElementById('result').innerHTML = 'Login link sent! Please check your email.';
+          
+          // Start checking login state
+          checkLoginState(email);
+        } else {
+          throw new Error('Failed to send login link');
+        }
+      } catch (error) {
+        document.getElementById('result').innerHTML = 'Error: ' + error.message;
+      }
+
+      // Reset submit button after response
+      submitButton.innerHTML = 'Send Login Link';
+      submitButton.disabled = false;
+    }
+
+    // Function to check login state based on email
+    async function checkLoginState(email) {
+      const interval = setInterval(async () => {
+        try {
+          const response = await fetch('https://swifttech-server.onrender.com/check-login-state', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email })
+          });
+
+          const data = await response.json();
+
+          if (data.loginState === true) {
+            clearInterval(interval);  // Stop retrying
+            localStorage.setItem('userEmail', email); // Save email to local storage
+            window.location.href = '/dashboard';  // Redirect to dashboard
+          } else {
+            console.log('Login state is false, retrying...');
+          }
+        } catch (error) {
+          console.error('Error checking login state:', error);
+        }
+      }, 5000);  // Check every 5 seconds
+    }
+
+    // Check if user is logged in and show appropriate button status
+    function checkLoginStatus() {
+      // You can implement a server-side check for the login status here
+      const loggedIn = false; // This is just an example; replace with actual login check
+
+      if (loggedIn) {
+        document.getElementById('result').innerHTML = 'You are already logged in!';
+      } else {
+        document.getElementById('result').innerHTML = '';
+      }
+    }
+
+    // Call this function to check login status when the page loads
+    checkLoginStatus();
+  </script>
+  </body>
+  </html>
