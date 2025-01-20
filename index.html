@@ -559,12 +559,19 @@
                   });
                   const data = await response.json();
                   
+                  // Save user data to localStorage
+                  localStorage.setItem('userData', JSON.stringify({
+                      accountStatus: "active",
+                      activeProjects: data.activeProjects || [],
+                      balance: data.balance || 0,
+                      plan: "premium"
+                  }));
+
                   switch(tabId) {
                       case 'dashboard':
                           updateDashboard(data);
                           break;
                       case 'templates':
-                          await getUserSubscriptionPlan();
                           renderTemplates(data.swifttech.templates);
                           break;
                       case 'snippets':
@@ -586,39 +593,6 @@
               } catch (error) {
                   console.error(`Error loading ${tabId} data:`, error);
               }
-          }
-
-          async function getUserSubscriptionPlan() {                         
-              const storedEmail = localStorage.getItem('userEmail');                         
-              try {                             
-                  const response = await fetch(`${API_URL}/subscription-plan`, {                                 
-                      method: 'POST',                                 
-                      headers: {                                     
-                          'Content-Type': 'application/json',                                     
-                          'Accept': 'application/json'                                 
-                      },                                 
-                      body: JSON.stringify({                                      
-                          email: storedEmail                                 
-                      })                             
-                  });                             
-                                 
-                  if (!response.ok) {                                 
-                      console.error('Server response:', await response.text());                                 
-                      throw new Error(`Failed to fetch subscription plan: ${response.status}`);                             
-                  }                             
-                                 
-                  const data = await response.json();                             
-                  if (!data || !data.plan) {                                 
-                      throw new Error('Invalid response data');                             
-                  }                             
-                                 
-                  localStorage.setItem('userPlan', data.plan);                             
-                  return data.plan;                         
-              } catch (error) {                             
-                  console.error('Error fetching user subscription plan:', error);                             
-                  localStorage.setItem('userPlan', 'free');                             
-                  return 'free';                         
-              }                     
           }
 
           function updateDashboard(data) {
