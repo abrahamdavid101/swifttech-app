@@ -588,7 +588,7 @@
           }
 
           function updateDashboard(data) {
-              localStorage.setItem('userPlan', data.plan);
+              localStorage.setItem('userPlan', data.plan || 'free');
               document.getElementById('activeProjects').textContent = data.activeProjects?.length || 0;
               document.getElementById('projectsGrowth').textContent = '0%';
               document.getElementById('totalBudget').textContent = (data.balance || 0).toFixed(2);
