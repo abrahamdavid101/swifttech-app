@@ -351,9 +351,10 @@
 
               const renderTemplateCards = (templatesData) => {
                   templatesGrid.innerHTML = Object.values(templatesData).map(template => {
-                      const isAccessible = userPlan === 'gold' || 
+                      const isAccessible = 
+                          (userPlan === 'free' && template.plan === 1) || 
                           (userPlan === 'premium' && template.plan <= 2) || 
-                          (userPlan === 'free' && template.plan === 1);
+                          (userPlan === 'gold');
 
                       const planBadge = template.plan === 1 ? 
                           '<span class="badge bg-success"><i class="fas fa-star"></i> Free</span>' :
@@ -383,19 +384,19 @@
                                       ${template.tags.map(tag => `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;"><i class="fas fa-tag" style="margin-right: 5px;"></i>${tag}</span>`).join('')}
                                   </div>
                                   <div style="display: flex; gap: 10px; margin-top: 20px;">
-                                      <button onclick="previewTemplate('${template.id}')" class="btn btn-outline-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                          <i class="fas fa-eye"></i> Preview
+                                      <button onclick="previewTemplate('${template.id}')" class="btn btn-outline-primary" style="flex: 1;">
+                                          <i class="fas fa-eye"></i>
                                       </button>
                                       ${isAccessible ? `
-                                          <button onclick="downloadTemplate('${template.id}')" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                              <i class="fas fa-download"></i> Download
+                                          <button onclick="downloadTemplate('${template.id}')" class="btn btn-primary" style="flex: 1;">
+                                              <i class="fas fa-download"></i>
                                           </button>
-                                          <button onclick="copyTemplateId('${template.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
+                                          <button onclick="copyTemplateId('${template.id}')" class="btn btn-secondary" style="flex: 1;">
                                               <i class="fas fa-copy"></i>
                                           </button>
                                       ` : `
-                                          <button class="btn btn-warning" onclick="showUpgradeModal()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                              <i class="fas fa-lock"></i> Upgrade to ${template.plan === 2 ? 'Premium' : 'Gold'}
+                                          <button class="btn btn-warning" onclick="showUpgradeModal()" style="flex: 1;">
+                                              <i class="fas fa-lock"></i>
                                           </button>
                                       `}
                                   </div>
