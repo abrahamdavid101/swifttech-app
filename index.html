@@ -631,13 +631,15 @@
               document.getElementById('projectsGrowth').textContent = `${((data.activeProjects || 0) / 1000 * 100).toFixed(1)}%`;              
               document.getElementById('totalBudget').textContent = `$${(data.balance || 0).toFixed(2)}`;
               document.getElementById('budgetGrowth').textContent = `${((data.balance || 0) / 1000 * 100).toFixed(1)}%`;
-              document.getElementById('completedProjects').textContent = data.completedProjects || 0;
+              document.getElementById('completedProjects').textContent = data.completedProjects ? data.completedProjects : '0';              
               document.getElementById('tasksStatus').textContent = 'On Track';
 
               const projectList = document.getElementById('projectList');
               if (data.projects && data.projects.length > 0) {
-                  projectList.style.maxHeight = '150px';
+                  projectList.style.maxHeight = '80px';
                   projectList.style.overflowY = 'auto';
+                  projectList.style.scrollbarWidth = 'thin';
+                  projectList.style.scrollbarColor = '#888 #f1f1f1';
                   projectList.innerHTML = data.projects.map(project => `
                       <div class="project-item" style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; height: 150px;">
                           <div>
@@ -649,6 +651,22 @@
                               padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">${project.status || 'Unknown'}</span>
                       </div>
                   `).join('');
+                  projectList.style.cssText += `
+                    &::-webkit-scrollbar {
+                      width: 8px;
+                    }
+                    &::-webkit-scrollbar-track {
+                      background: #f1f1f1;
+                      border-radius: 4px;
+                    }
+                    &::-webkit-scrollbar-thumb {
+                      background: #888;
+                      border-radius: 4px;
+                    }
+                    &::-webkit-scrollbar-thumb:hover {
+                      background: #555;
+                    }
+                  `;
               } else {                  
                 projectList.innerHTML = '<div style="padding: 15px; text-align: center;">No projects available</div>';
               }
