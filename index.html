@@ -447,7 +447,8 @@
               const snippetsList = document.getElementById('snippetsList');
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
-              searchInput.placeholder = 'Search code snippets...';
+              searchInput.placeholder = 'Search snippets...';
+              searchInput.style.fontFamily = "'Montserrat', sans-serif";
               searchInput.className = 'search-input';
               searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;';
               
@@ -460,42 +461,73 @@
 
               const renderSnippetCards = (snippetsData) => {
                   snippetsGrid.innerHTML = Object.values(snippetsData).map(snippet => {
-                      const isAccessible = snippet.isFree || 
-                          (userPlan === 'premium' && snippet.plan <= 2) || 
-                          (userPlan === 'gold' && snippet.plan <= 3);
+                      const planValues = { 'free': 1, 'premium': 2, 'gold': 3 };
+                      const userPlanValue = planValues[userPlan] || 1;
+                      const snippetPlanValue = planValues[snippet.plan] || 1;
+                      const isAccessible = userPlanValue >= snippetPlanValue;
+                      const cardOpacity = isAccessible ? '1' : '0.7';
+                      const cardPointerEvents = isAccessible ? 'auto' : 'none';
+                      const buttonStyle = `
+                          font-family: 'Montserrat', sans-serif;
+                          width: 100%;
+                          padding: 12px;
+                          margin: 5px 0;
+                          border-radius: 6px;
+                          transition: all 0.3s ease;
+                          font-weight: 500;
+                          text-transform: uppercase;
+                          letter-spacing: 0.5px;
+                      `;
+                      const activeButtonStyle = `
+                          ${buttonStyle}
+                          cursor: pointer;
+                          background: #fff;
+                          border: 2px solid #007bff;
+                          color: #007bff;
+                      `;
+                      const disabledButtonStyle = `
+                          ${buttonStyle}
+                          background: #f5f5f5;
+                          border: 2px solid #ddd;
+                          color: #999;
+                          cursor: not-allowed;
+                      `;
 
                       return `
-                          <div class="snippet-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
-                              <div style="padding: 15px;">
-                                  <h4>${snippet.name}</h4>
-                                  <p>${snippet.description}</p>
-                                  <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                      <code>${snippet.language}</code>
+                          <div class="snippet-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); opacity: ${cardOpacity}; pointer-events: ${cardPointerEvents};">
+                              <div style="padding: 20px;">
+                                  <h4 style="margin-bottom: 10px; color: #333; font-family: 'Montserrat', sans-serif;">${snippet.name}</h4>
+                                  <p style="color: #666; font-size: 0.9em;">${snippet.description}</p>
+                                  <div style="display: inline-block; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 15px; font-family: 'Montserrat', sans-serif; ${
+                                      snippet.plan === 'free' ? 
+                                      'background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;' :
+                                      snippet.plan === 'premium' ? 
+                                      'background-color: #e3f2fd; color: #1565c0; border: 1px solid #90caf9;' :
+                                      'background-color: #fff8e1; color: #f57f17; border: 1px solid #ffecb3;'
+                                  }">
+                                      ${snippet.plan.charAt(0).toUpperCase() + snippet.plan.slice(1)} Plan
                                   </div>
-                                  <div style="display: flex; justify-content: space-between; align-items: center;">
-                                      <span>${snippet.isFree ? 'Free' : snippet.price}</span>
-                                      <span>⭐ ${snippet.ratings.average} (${snippet.ratings.reviews})</span>
+                                  
+                                  <div style="margin: 15px 0;">
+                                      ${snippet.tags.map(tag => `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${tag}</span>`).join('')}
                                   </div>
-                                  <div style="margin-top: 10px;">
-                                      ${snippet.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
-                                  </div>
-                                  <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                      <button onclick="previewSnippet('${snippet.id}')" class="btn btn-outline-primary" style="flex: 1;">
-                                          <i class="fas fa-eye"></i> Preview
-                                      </button>
-                                      ${isAccessible ? `
-                                          <button onclick="downloadSnippet('${snippet.id}')" class="btn btn-primary" style="flex: 1;">
-                                              <i class="fas fa-download"></i> Download
-                                          </button>
-                                          <button onclick="copySnippetId('${snippet.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
-                                              <i class="fas fa-copy"></i>
-                                          </button>
-                                      ` : `
-                                          <button class="btn btn-secondary" disabled style="flex: 1;">
-                                              <i class="fas fa-lock"></i> Upgrade Required
-                                          </button>
-                                      `}
-                                  </div>
+                                  <button onclick="previewSnippet('${snippet.id}')" 
+                                      style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
+                                      Preview
+                                  </button>
+                                  <button onclick="downloadSnippet('${snippet.id}')"
+                                      style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
+                                      Download
+                                  </button>
+                                  <button onclick="navigator.clipboard.writeText('${snippet.id}')"
+                                      style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
+                                      Copy
+                                  </button>
+                                  ${!isAccessible ? `
+                                      <div style="text-align: center; color: #666; font-family: 'Montserrat', sans-serif; margin-top: 10px;">
+                                          Upgrade your plan to access this snippet
+                                      </div>
+                                  ` : ''}
                               </div>
                           </div>
                       `;
@@ -514,7 +546,6 @@
 
               renderSnippetCards(snippets);
           }
-
           
 
           async function renderCourses(courses) {
