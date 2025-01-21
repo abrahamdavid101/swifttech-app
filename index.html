@@ -356,6 +356,13 @@
                       const userPlanValue = planValues[userPlan] || 1;
                       const templatePlanValue = planValues[template.plan] || 1;
                       const isAccessible = userPlanValue >= templatePlanValue;
+
+                      const planBadge = template.plan === 'free' ? 
+                          '<span class="badge bg-success">Free</span>' :
+                          template.plan === 'premium' ? 
+                          '<span class="badge bg-primary">Premium</span>' :
+                          '<span class="badge bg-warning">Gold</span>';
+
                       const cardOpacity = isAccessible ? '1' : '0.7';
                       const cardPointerEvents = isAccessible ? 'auto' : 'none';
                       const buttonStyle = `
