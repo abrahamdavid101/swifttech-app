@@ -184,7 +184,7 @@
 
                       <div class="stat-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                           <h3 style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Completed Projects</h3>
-                          <p style="font-size: 1.8rem; color: #1a73e8; font-weight: bold;" id="completedTasks">Loading...</p>
+                          <p style="font-size: 1.8rem; color: #1a73e8; font-weight: bold;" id="completedProjects">Loading...</p>
                           <div style="display: flex; align-items: center; color: #28a745; font-size: 0.8rem;">
                               <i class="fas fa-check-circle"></i>
                               <span style="margin-left: 5px;" id="tasksStatus">Loading...</span>
@@ -628,15 +628,18 @@
           function updateDashboard(data) {
               localStorage.setItem('userPlan', data.plan || 'free');
               document.getElementById('activeProjects').textContent = data.activeProjects || 0;
-              document.getElementById('projectsGrowth').textContent = `${((data.activeProjects || 0) / 1000 * 100).toFixed(1)}%`;              document.getElementById('totalBudget').textContent = `${(data.balance || 0).toFixed(2)}`;
+              document.getElementById('projectsGrowth').textContent = `${((data.activeProjects || 0) / 1000 * 100).toFixed(1)}%`;              
+              document.getElementById('totalBudget').textContent = `$${(data.balance || 0).toFixed(2)}`;
               document.getElementById('budgetGrowth').textContent = `${((data.balance || 0) / 1000 * 100).toFixed(1)}%`;
-              document.getElementById('completedTasks').textContent = data.completedProjects || 0;
+              document.getElementById('completedProjects').textContent = data.completedProjects || 0;
               document.getElementById('tasksStatus').textContent = 'On Track';
 
               const projectList = document.getElementById('projectList');
               if (data.projects && data.projects.length > 0) {
+                  projectList.style.maxHeight = '150px';
+                  projectList.style.overflowY = 'auto';
                   projectList.innerHTML = data.projects.map(project => `
-                      <div class="project-item" style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                      <div class="project-item" style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; height: 150px;">
                           <div>
                               <h4 style="color: #333;">${project.name || 'Untitled Project'}</h4>
                               <p style="color: #666; font-size: 0.9rem;">ID: ${project.id || 'none'}</p>
@@ -646,8 +649,8 @@
                               padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">${project.status || 'Unknown'}</span>
                       </div>
                   `).join('');
-              } else {
-                  projectList.innerHTML = '<div style="padding: 15px; text-align: center;">No projects available</div>';
+              } else {                  
+                projectList.innerHTML = '<div style="padding: 15px; text-align: center;">No projects available</div>';
               }
           
               const teamList = document.getElementById('teamList');
