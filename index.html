@@ -183,7 +183,7 @@
                       </div>
 
                       <div class="stat-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                          <h3 style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Completed Tasks</h3>
+                          <h3 style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Completed Projects</h3>
                           <p style="font-size: 1.8rem; color: #1a73e8; font-weight: bold;" id="completedTasks">Loading...</p>
                           <div style="display: flex; align-items: center; color: #28a745; font-size: 0.8rem;">
                               <i class="fas fa-check-circle"></i>
@@ -628,10 +628,9 @@
           function updateDashboard(data) {
               localStorage.setItem('userPlan', data.plan || 'free');
               document.getElementById('activeProjects').textContent = data.activeProjects || 0;
-              document.getElementById('projectsGrowth').textContent = '0%';
-              document.getElementById('totalBudget').textContent = `$${(data.balance || 0).toFixed(2)}`;
-              document.getElementById('budgetGrowth').textContent = '0%';
-              document.getElementById('completedTasks').textContent = data.profile.trustScore || 0;
+              document.getElementById('projectsGrowth').textContent = `${((data.activeProjects || 0) / 1000 * 100).toFixed(1)}%`;              document.getElementById('totalBudget').textContent = `${(data.balance || 0).toFixed(2)}`;
+              document.getElementById('budgetGrowth').textContent = `${((data.balance || 0) / 1000 * 100).toFixed(1)}%`;
+              document.getElementById('completedTasks').textContent = data.completedProjects || 0;
               document.getElementById('tasksStatus').textContent = 'On Track';
 
               const projectList = document.getElementById('projectList');
