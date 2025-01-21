@@ -356,13 +356,6 @@
                       const userPlanValue = planValues[userPlan] || 1;
                       const templatePlanValue = planValues[template.plan] || 1;
                       const isAccessible = userPlanValue >= templatePlanValue;
-
-                      const planBadge = template.plan === 'free' ? 
-                          '<span class="badge bg-success">Free</span>' :
-                          template.plan === 'premium' ? 
-                          '<span class="badge bg-primary">Premium</span>' :
-                          '<span class="badge bg-warning">Gold</span>';
-
                       const cardOpacity = isAccessible ? '1' : '0.7';
                       const cardPointerEvents = isAccessible ? 'auto' : 'none';
                       const buttonStyle = `
@@ -405,15 +398,15 @@
                                   <div style="margin: 15px 0;">
                                       ${template.tags.map(tag => `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${tag}</span>`).join('')}
                                   </div>
-                                      <button onclick="previewTemplate('${template.id}')" 
+                                      <button onclick="window.open('${template.previewURL}')" 
                                           style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
                                           Preview
                                       </button>
-                                      <button onclick="downloadTemplate('${template.id}')"
+                                      <button onclick="window.open('${template.downloadURL}')"
                                           style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
                                           Download
                                       </button>
-                                      <button onclick="copyTemplateId('${template.id}')"
+                                      <button onclick="navigator.clipboard.writeText('${template.id}')"
                                           style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
                                           Copy
                                       </button>
