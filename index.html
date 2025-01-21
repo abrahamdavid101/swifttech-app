@@ -627,11 +627,11 @@
 
           function updateDashboard(data) {
               localStorage.setItem('userPlan', data.plan || 'free');
-              document.getElementById('activeProjects').textContent = data.activeProjects?.length || 0;
+              document.getElementById('activeProjects').textContent = data.activeProjects || 0;
               document.getElementById('projectsGrowth').textContent = '0%';
               document.getElementById('totalBudget').textContent = (data.balance || 0).toFixed(2);
               document.getElementById('budgetGrowth').textContent = '0%';
-              document.getElementById('completedTasks').textContent = data.completedTasks?.length || 0;
+              document.getElementById('completedTasks').textContent = data.profile?.trustScore || 0;
               document.getElementById('tasksStatus').textContent = 'On Track';
 
               const projectList = document.getElementById('projectList');
@@ -654,6 +654,7 @@
                       <div>
                           <h4 style="color: #333; font-size: 0.9rem;">${data.profile?.email || 'Unknown User'}</h4>
                           <p style="color: #666; font-size: 0.8rem;">Account Status: ${data.accountStatus || 'active'}</p>
+                          <p style="color: #666; font-size: 0.8rem;">Plan Type: ${localStorage.getItem('userPlan') || 'free'}</p>
                       </div>
                   </div>
               `;
