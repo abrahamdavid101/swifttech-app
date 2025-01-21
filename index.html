@@ -402,6 +402,16 @@
                               <div style="padding: 20px;">
                                   <h4 style="margin-bottom: 10px; color: #333; font-family: 'Montserrat', sans-serif;">${template.name}</h4>
                                   <p style="color: #666; font-size: 0.9em;">${template.description}</p>
+                                  <div style="display: inline-block; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 15px; font-family: 'Montserrat', sans-serif; ${
+                                                                        template.plan === 'free' ? 
+                                                                        'background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;' :
+                                                                        template.plan === 'premium' ? 
+                                                                        'background-color: #e3f2fd; color: #1565c0; border: 1px solid #90caf9;' :
+                                                                        'background-color: #fff8e1; color: #f57f17; border: 1px solid #ffecb3;'
+                                                                    }">
+                                                                        ${template.plan.charAt(0).toUpperCase() + template.plan.slice(1)} Plan
+                                                                    </div>
+                                  
                                   <div style="margin: 15px 0;">
                                       ${template.tags.map(tag => `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${tag}</span>`).join('')}
                                   </div>
