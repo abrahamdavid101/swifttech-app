@@ -635,7 +635,7 @@
               document.getElementById('tasksStatus').textContent = 'On Track';
 
               const projectList = document.getElementById('projectList');
-              projectList.innerHTML = (data.activeProjects || []).map(project => `
+              projectList.innerHTML = `
                   <div class="project-item" style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
                       <div>
                           <h4 style="color: #333;">${project.name || 'Untitled Project'}</h4>
@@ -645,8 +645,8 @@
                           color: ${project.status === 'In Progress' ? '#28a745' : '#f57c00'}; 
                           padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">${project.status || 'Unknown'}</span>
                   </div>
-              `).join('');
-
+                `;
+          
               const teamList = document.getElementById('teamList');
               teamList.innerHTML = `
                   <div class="team-member" style="display: flex; align-items: center; margin-bottom: 15px;">
