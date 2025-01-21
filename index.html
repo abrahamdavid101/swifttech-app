@@ -636,12 +636,12 @@
 
               const projectList = document.getElementById('projectList');
               if (data.projects && data.projects.length > 0) {
-                  projectList.style.maxHeight = '80px';
+                  projectList.style.maxHeight = '100px';
                   projectList.style.overflowY = 'auto';
                   projectList.style.scrollbarWidth = 'thin';
                   projectList.style.scrollbarColor = '#888 #f1f1f1';
                   projectList.innerHTML = data.projects.map(project => `
-                      <div class="project-item" style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; height: 30px;">
+                      <div class="project-item" style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; height: 90px;">
                           <div>
                               <h4 style="color: #333;">${project.name || 'Untitled Project'}</h4>
                               <p style="color: #666; font-size: 0.9rem;">ID: ${project.id || 'none'}</p>
