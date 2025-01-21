@@ -515,12 +515,15 @@
               renderSnippetCards(snippets);
           }
 
+          
+
           async function renderCourses(courses) {
               const userPlan = localStorage.getItem('userPlan') || 'free';
               const coursesList = document.getElementById('coursesList');
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
               searchInput.placeholder = 'Search courses...';
+              searchInput.style.fontFamily = "'Montserrat', sans-serif";
               searchInput.className = 'search-input';
               searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;';
               
@@ -533,39 +536,75 @@
 
               const renderCourseCards = (coursesData) => {
                   coursesGrid.innerHTML = Object.values(coursesData).map(course => {
-                      const isAccessible = course.isFree || 
-                          (userPlan === 'premium' && course.plan <= 2) || 
-                          (userPlan === 'gold' && course.plan <= 3);
+                      const planValues = { 'free': 1, 'premium': 2, 'gold': 3 };
+                      const userPlanValue = planValues[userPlan] || 1;
+                      const coursePlanValue = planValues[course.plan] || 1;
+                      const isAccessible = userPlanValue >= coursePlanValue;
+                      const cardOpacity = isAccessible ? '1' : '0.7';
+                      const cardPointerEvents = isAccessible ? 'auto' : 'none';
+                      const buttonStyle = `
+                          font-family: 'Montserrat', sans-serif;
+                          width: 100%;
+                          padding: 12px;
+                          margin: 5px 0;
+                          border-radius: 6px;
+                          transition: all 0.3s ease;
+                          font-weight: 500;
+                          text-transform: uppercase;
+                          letter-spacing: 0.5px;
+                      `;
+                      const activeButtonStyle = `
+                          ${buttonStyle}
+                          cursor: pointer;
+                          background: #fff;
+                          border: 2px solid #007bff;
+                          color: #007bff;
+                      `;
+                      const disabledButtonStyle = `
+                          ${buttonStyle}
+                          background: #f5f5f5;
+                          border: 2px solid #ddd;
+                          color: #999;
+                          cursor: not-allowed;
+                      `;
 
                       return `
-                          <div class="course-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
-                              <img src="${course.imageURL}" alt="${course.name}" style="width: 100%; height: 200px; object-fit: cover;">
-                              <div style="padding: 15px;">
-                                  <h4>${course.name}</h4>
-                                  <p>${course.description}</p>
-                                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                      <span>${course.isFree ? 'Free' : course.price}</span>
-                                      <span>⭐ ${course.ratings.average} (${course.ratings.reviews})</span>
+                          <div class="course-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); opacity: ${cardOpacity}; pointer-events: ${cardPointerEvents};">
+                              <div class="position-relative">
+                                  <img src="${course.imageURL}" alt="${course.name}" style="width: 100%; height: 200px; object-fit: cover;">
+                              </div>
+                              <div style="padding: 20px;">
+                                  <h4 style="margin-bottom: 10px; color: #333; font-family: 'Montserrat', sans-serif;">${course.name}</h4>
+                                  <p style="color: #666; font-size: 0.9em;">${course.description}</p>
+                                  <div style="display: inline-block; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 15px; font-family: 'Montserrat', sans-serif; ${
+                                      course.plan === 'free' ? 
+                                      'background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;' :
+                                      course.plan === 'premium' ? 
+                                      'background-color: #e3f2fd; color: #1565c0; border: 1px solid #90caf9;' :
+                                      'background-color: #fff8e1; color: #f57f17; border: 1px solid #ffecb3;'
+                                  }">
+                                      ${course.plan.charAt(0).toUpperCase() + course.plan.slice(1)} Plan
                                   </div>
-                                  <div style="margin-top: 10px;">
-                                      ${course.tags.map(tag => `<span style="background: #f0f0f0; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.8em;">${tag}</span>`).join('')}
+                                  <div style="margin: 15px 0;">
+                                      ${course.tags.map(tag => `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${tag}</span>`).join('')}
                                   </div>
-                                  <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                      <button onclick="previewCourse('${course.id}')" class="btn btn-outline-primary" style="flex: 1;">
-                                          <i class="fas fa-eye"></i> Preview
+                                      <button onclick="previewCourse('${course.id}')"
+                                           style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
+                                          Preview
                                       </button>
-                                      ${isAccessible ? `
-                                          <button onclick="startCourse('${course.id}')" class="btn btn-primary" style="flex: 1;">
-                                              <i class="fas fa-play"></i> Start Course
-                                          </button>
-                                          <button onclick="copyCourseId('${course.id}')" class="btn btn-secondary" style="flex: 0 0 auto;">
-                                              <i class="fas fa-copy"></i>
-                                          </button>
-                                      ` : `
-                                          <button class="btn btn-secondary" disabled style="flex: 1;">
-                                              <i class="fas fa-lock"></i> Upgrade Required
-                                          </button>
-                                      `}
+                                      <button onclick="startCourse('${course.id}')"
+                                          style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
+                                          Start Course
+                                      </button>
+                                      <button onclick="navigator.clipboard.writeText('${course.id}')"
+                                          style="${isAccessible ? activeButtonStyle : disabledButtonStyle}; ${isAccessible ? ':hover { background: #007bff; color: #fff; }' : ''}">
+                                          Copy
+                                      </button>
+                                      ${!isAccessible ? `
+                                          <div style="text-align: center; color: #666; font-family: 'Montserrat', sans-serif; margin-top: 10px;">
+                                              Upgrade your plan to access this course
+                                          </div>
+                                      ` : ''}
                                   </div>
                               </div>
                           </div>
@@ -585,6 +624,7 @@
 
               renderCourseCards(courses);
           }
+          
                    async function loadTabContent(tabId) {
               const storedEmail = localStorage.getItem('userEmail');
               try {
@@ -609,6 +649,9 @@
                           break;
                       case 'courses':
                           renderCourses(data.swifttech.courses);
+                          break;
+                      case 'hire':
+                          renderHire(data.swifttech.developers);
                           break;
                       case 'settings':
                           document.getElementById('settingsContent').innerHTML = renderSettings(data.settings);
