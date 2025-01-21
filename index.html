@@ -629,23 +629,27 @@
               localStorage.setItem('userPlan', data.plan || 'free');
               document.getElementById('activeProjects').textContent = data.activeProjects || 0;
               document.getElementById('projectsGrowth').textContent = '0%';
-              document.getElementById('totalBudget').textContent = (data.balance || 0).toFixed(2);
+              document.getElementById('totalBudget').textContent = `$${(data.balance || 0).toFixed(2)}`;
               document.getElementById('budgetGrowth').textContent = '0%';
-              document.getElementById('completedTasks').textContent = data.profile?.trustScore || 0;
+              document.getElementById('completedTasks').textContent = data.profile.trustScore || 0;
               document.getElementById('tasksStatus').textContent = 'On Track';
 
               const projectList = document.getElementById('projectList');
-              projectList.innerHTML = `
-                  <div class="project-item" style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-                      <div>
-                          <h4 style="color: #333;">${project.name || 'Untitled Project'}</h4>
-                          <p style="color: #666; font-size: 0.9rem;">ID: ${project.id || 'none'}</p>
+              if (data.projects && data.projects.length > 0) {
+                  projectList.innerHTML = data.projects.map(project => `
+                      <div class="project-item" style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                          <div>
+                              <h4 style="color: #333;">${project.name || 'Untitled Project'}</h4>
+                              <p style="color: #666; font-size: 0.9rem;">ID: ${project.id || 'none'}</p>
+                          </div>
+                          <span class="status" style="background: ${project.status === 'In Progress' ? '#e8f5e9' : '#fff3e0'}; 
+                              color: ${project.status === 'In Progress' ? '#28a745' : '#f57c00'}; 
+                              padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">${project.status || 'Unknown'}</span>
                       </div>
-                      <span class="status" style="background: ${project.status === 'In Progress' ? '#e8f5e9' : '#fff3e0'}; 
-                          color: ${project.status === 'In Progress' ? '#28a745' : '#f57c00'}; 
-                          padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">${project.status || 'Unknown'}</span>
-                  </div>
-                `;
+                  `).join('');
+              } else {
+                  projectList.innerHTML = '<div style="padding: 15px; text-align: center;">No projects available</div>';
+              }
           
               const teamList = document.getElementById('teamList');
               teamList.innerHTML = `
@@ -662,5 +666,5 @@
 
           loadTabContent('dashboard');
           </script>      
-      </body>
-  </html>
+      </body>  
+      </html>
