@@ -386,6 +386,9 @@
 
                       return `
                           <div class="template-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); opacity: ${cardOpacity}; pointer-events: ${cardPointerEvents};">
+                              <div class="position-relative">
+                                  <img src="${template.imageURL}" alt="${template.name}" style="width: 100%; height: 200px; object-fit: cover;">
+                              </div>
                               <div style="padding: 20px;">
                                   <h4 style="margin-bottom: 10px; color: #333; font-family: 'Montserrat', sans-serif;">${template.name}</h4>
                                   <p style="color: #666; font-size: 0.9em;">${template.description}</p>
