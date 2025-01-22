@@ -660,6 +660,11 @@
 
         async function renderHire(developers) {
               const cardContainer = document.getElementById('hireList');
+              const developersGrid = document.createElement('div');
+              developersGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';
+              cardContainer.innerHTML = '';
+              cardContainer.appendChild(developersGrid);
+
               const cardStyle = `
                   background: #fff;
                   border-radius: 12px;
