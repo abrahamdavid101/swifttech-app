@@ -776,13 +776,6 @@
                 `;
 
               document.body.appendChild(script);
-
-              // Initialize chat listeners for each active developer
-              developers.forEach(dev => {
-                  if (dev.online === true ) {
-                      initializeChatListeners(dev.id);
-                  }
-              });
           }          
           
 
