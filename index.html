@@ -342,11 +342,10 @@
               searchInput.placeholder = 'Search templates...';
               searchInput.style.fontFamily = "'Montserrat', sans-serif";              
               searchInput.className = 'search-input';
-              searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;';
+              searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; font-family: "Montserrat", sans-serif;';
               
               const templatesGrid = document.createElement('div');
-              templatesGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';
-              
+              templatesGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';              
               templatesList.innerHTML = '';
               templatesList.appendChild(searchInput);
               templatesList.appendChild(templatesGrid);
@@ -451,11 +450,10 @@
               searchInput.placeholder = 'Search snippets...';
               searchInput.style.fontFamily = "'Montserrat', sans-serif";
               searchInput.className = 'search-input';
-              searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;';
+              searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; font-family: "Montserrat", sans-serif;';
               
               const snippetsGrid = document.createElement('div');
-              snippetsGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';
-              
+              snippetsGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';              
               snippetsList.innerHTML = '';
               snippetsList.appendChild(searchInput);
               snippetsList.appendChild(snippetsGrid);
@@ -557,7 +555,7 @@
               searchInput.placeholder = 'Search courses...';
               searchInput.style.fontFamily = "'Montserrat', sans-serif";
               searchInput.className = 'search-input';
-              searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;';
+              searchInput.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; font-family: "Montserrat", sans-serif;';
               
               const coursesGrid = document.createElement('div');
               coursesGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';
@@ -887,7 +885,8 @@
                               const response = await fetch('https://swifttech-server.onrender.com/send-message', {
                                   method: 'POST',
                                   headers: {
-                                      'Content-Type': 'application/json'
+                                      'Content-Type': 'application/json',
+                                      'Accept': 'application/json'
                                   },
                                   body: JSON.stringify(messageData)
                               });
