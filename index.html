@@ -887,7 +887,7 @@
                               const response = await fetch('https://swifttech-server.onrender.com/send-message', {
                                   method: 'POST',
                                   headers: {
-                                      'Content-Type': 'application/json'
+                                      'Content-Type': 'application/json',
                                       'Accept': 'application/json'
                                   },
                                   body: JSON.stringify(messageData)
@@ -897,8 +897,7 @@
                                   throw new Error('Network response was not ok');
                               }
 
-                              messageInput.value = '';
-                              
+                              messageInput.value = '';                              
                               // Update chat display
                               const chatDiv = document.getElementById('chat_' + devId);
                               const messageElement = document.createElement('div');
