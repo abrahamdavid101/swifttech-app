@@ -5,6 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Dashboard</title>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
       <link rel="icon" href="favicon.png" type="image/x-icon">
       <style>
@@ -688,12 +689,12 @@
               developersGrid.innerHTML = Object.values(developers).map(developer => `                  
               <div class="developer-card" style="${cardStyle}">
                       <div style="display: flex; align-items: start; gap: 20px;">
-                          <img src="${developer.profilePicture}" alt="${developer.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+                          <img src="${developer.profilePicture}" alt="${developer.name}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
                           <div style="flex-grow: 1;">
                               <div style="display: flex; justify-content: space-between; align-items: center;">
                                   <h3 style="margin: 0; color: #333; font-size: 1.4em;">
                                       ${developer.name}
-                                      ${developer.verifiedBadge ? '<span><i class="fa-solid fa-circle-check" style="color: #0762f2;"></i></span>' : ''}
+                                      ${developer.verifiedBadge === true ? '<span><i class="fa-solid fa-circle-check" style="color: #0762f2;"></i></span>' : ''}
                                   </h3>
                                   <div style="display: flex; gap: 10px;">
                                       ${developer.linkedinProfile ? `<a href="${developer.linkedinProfile}" target="_blank" style="color: #0077b5;"><i class="fab fa-linkedin"></i></a>` : ''}
