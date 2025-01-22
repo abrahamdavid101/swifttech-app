@@ -879,7 +879,7 @@
                                   developerId: devId,
                                   clientId: localStorage.getItem('userEmail'),
                                   message: message,
-                                  timestamp: new Date().toISOString()
+                                  senderId: localStorage.getItem('userEmail')
                               };
 
                               const response = await fetch('https://swifttech-server.onrender.com/send-message', {
@@ -913,6 +913,7 @@
                           }
                       }
                   }
+
                   
                   // Set up real-time chat listeners
                   function initializeChatListeners(devId) {
