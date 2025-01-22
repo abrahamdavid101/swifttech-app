@@ -879,22 +879,22 @@
                           try {
                               const messageData = {
                                   developerId: devId,
-                                  senderId: localStorage.getItem('userEmail'),
-                                  message,
+                                  clientId: localStorage.getItem('userEmail'),
+                                  message: message,
                                   timestamp: new Date().toISOString()
                               };
 
                               const response = await fetch('https://swifttech-server.onrender.com/send-message', {
                                   method: 'POST',
                                   headers: {
-                                      'Content-Type': 'application/json',
-                                      'Accept': 'application/json'
+                                      'Content-Type': 'application/json'
                                   },
                                   body: JSON.stringify(messageData)
                               });
 
                               if (!response.ok) {
-                                  throw new Error('Network response was not ok');
+                                  const errorData = await response.json();
+                                  throw new Error(errorData.message || 'Network response was not ok');
                               }
 
                               messageInput.value = '';                              
@@ -914,7 +914,6 @@
                           }
                       }
                   }
-
                   
                   // Set up real-time chat listeners
                   function initializeChatListeners(devId) {
