@@ -875,20 +875,17 @@
                       
                       if (message) {
                           try {
-                              const messageData = {
-                                  developerId: devId,
-                                  clientId: localStorage.getItem('userEmail'),
-                                  message: message,
-                                  senderId: localStorage.getItem('userEmail')
-                              };
-
                               const response = await fetch('https://swifttech-server.onrender.com/send-message', {
                                   method: 'POST',
                                   headers: {
                                       'Content-Type': 'application/json',
                                       'Accept': 'application/json'
                                   },
-                                  body: JSON.stringify(messageData)
+                                  body: JSON.stringify({
+                                      developerId: devId,
+                                      clientId: localStorage.getItem('userEmail'),
+                                      message: message
+                                  })
                               });
 
                               if (!response.ok) {
@@ -912,9 +909,7 @@
                               alert('Failed to send message. Please try again.');
                           }
                       }
-                  }
-
-                  
+                  }                  
                   // Set up real-time chat listeners
                   function initializeChatListeners(devId) {
                       fetch('https://swifttech-server.onrender.com/chat-messages/' + devId, {
