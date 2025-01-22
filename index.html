@@ -692,7 +692,7 @@
                       <div style="display: flex; align-items: start; gap: 20px;">
                                             <div style="position: relative;">
                                                 <img src="${developer.profilePicture}" alt="${developer.name}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
-                                                <div style="position: absolute; bottom: 6px; right: 6px; width: 15px; height: 15px; border-radius: 50%; background-color: ${developer.online === true ? '#2ecc71' : '#95a5a6'}; border: 2px solid white;"></div>
+                                                <div style="position: absolute; bottom: 8px; right: 7px; width: 16px; height: 16px; border-radius: 50%; background-color: ${developer.online === true ? '#2ecc71' : '#95a5a6'}; border: 2px solid white;"></div>
                                             </div>
                             <div style="flex-grow: 1;">
                               <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -706,7 +706,8 @@
                                   </div>
                               </div>
                               <div style="margin: 10px 0;">
-                                  ${developer.languages.map(lang => 
+                                <p style="color: #666; margin: 5px 0; font-size: 0.9em;">${developer.job}</p>
+                                 ${developer.languages.map(lang => 
                                       `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${lang}</span>`
                                   ).join('')}
                               </div>
