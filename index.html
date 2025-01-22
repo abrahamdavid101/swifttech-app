@@ -705,7 +705,7 @@
                                       ${developer.behanceProfile ? `<a href="${developer.behanceProfile}" target="_blank" style="color: #1769ff;"><i class="fab fa-behance"></i></a>` : ''}
                                   </div>
                               </div>
-                              <div style="margin: 10px 0;">
+                              <div style="margin: 2px 0;">
                                 <p style="color: #666; margin: 5px 0; font-size: 0.9em;">${developer.job}</p>
                                  ${developer.languages.map(lang => 
                                       `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${lang}</span>`
@@ -752,7 +752,7 @@
                           ` : ''}
                       </div>
           
-                      ${developer.status === 'active' ? `
+                      ${developer.online === true ? `
                           <div class="chat-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
                               <h4 style="margin: 0 0 15px 0; color: #333;">Project Chat</h4>
                               <div class="chat-messages" id="chat_${developer.id}" style="max-height: 200px; overflow-y: auto; padding: 10px; background: #f8f9fa; border-radius: 4px;">
@@ -945,7 +945,7 @@
 
               // Initialize chat listeners for each active developer
               developers.forEach(dev => {
-                  if (dev.status === 'active') {
+                  if (dev.online === true ) {
                       initializeChatListeners(dev.id);
                   }
               });
