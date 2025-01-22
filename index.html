@@ -321,7 +321,9 @@
           checkAuthState(); 
 
                     async function saveChat() {
-                        const selectedDeveloper = JSON.parse(localStorage.getItem('selectedDeveloper'));
+                        const developerId = localStorage.getItem('selectedDeveloperId');
+                        const developerName = localStorage.getItem('selectedDeveloperName');
+                        const developerProfilePicture = localStorage.getItem('selectedDeveloperPicture');
                         const clientEmail = localStorage.getItem('userEmail');
                         
                         try {
@@ -332,10 +334,10 @@
                                     'Accept': 'application/json'
                                 },
                                 body: JSON.stringify({
-                                    developerId: selectedDeveloper.id,
+                                    developerId: developerId,
                                     clientId: clientEmail,
-                                    developerName: selectedDeveloper.name,
-                                    developerProfilePicture: selectedDeveloper.profilePicture
+                                    developerName: developerName,
+                                    developerProfilePicture: developerProfilePicture
                                 })
                             });
           
@@ -351,8 +353,7 @@
                             console.error('Error opening chat:', error);
                             throw error;
                         }
-                    }
-          
+                    }          
           
                   document.querySelectorAll('.nav-item').forEach(item => {
                   item.addEventListener('click', () => {
@@ -765,12 +766,9 @@
               const script = document.createElement('script');
                     script.textContent = `
                         function hireDeveloper(devId, devName, devPicture) {
-                            const developerData = {
-                                id: devId,
-                                name: devName,
-                                profilePicture: devPicture
-                            };
-                            localStorage.setItem('selectedDeveloper', btoa(JSON.stringify(developerData)));
+                            localStorage.setItem('selectedDeveloperId', devId);
+                            localStorage.setItem('selectedDeveloperName', devName);
+                            localStorage.setItem('selectedDeveloperPicture', devPicture);
                             saveChat();
                             openChat();
                         }
