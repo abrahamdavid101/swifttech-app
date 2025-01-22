@@ -655,7 +655,295 @@
 
               renderCourseCards(courses);
           }
+
           
+          
+        async function renderHire(hire) {
+              const cardContainer = document.getElementById('hireContent');
+              const cardStyle = `
+                  background: #fff;
+                  border-radius: 12px;
+                  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                  margin: 20px;
+                  padding: 25px;
+                  transition: all 0.3s ease;
+                  font-family: 'Montserrat', sans-serif;
+              `;
+          
+              const buttonStyle = `
+                  padding: 8px 16px;
+                  border-radius: 6px;
+                  border: none;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  margin: 5px;
+              `;
+          
+              cardContainer.innerHTML = developers.map(dev => `
+                  <div class="developer-card" style="${cardStyle}">
+                      <div style="display: flex; align-items: start; gap: 20px;">
+                          <img src="${developer.profilePicture}" alt="${developer.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+                          <div style="flex-grow: 1;">
+                              <div style="display: flex; justify-content: space-between; align-items: center;">
+                                  <h3 style="margin: 0; color: #333; font-size: 1.4em;">
+                                      ${developer.name}
+                                      ${developer.verified ? '<span style="color: #007bff; margin-left: 5px;">✓</span>' : ''}
+                                  </h3>
+                                  <div style="display: flex; gap: 10px;">
+                                      ${developer.linkedin ? `<a href="${developer.linkedin}" target="_blank" style="color: #0077b5;"><i class="fab fa-linkedin"></i></a>` : ''}
+                                      ${developer.behance ? `<a href="${developer.behance}" target="_blank" style="color: #1769ff;"><i class="fab fa-behance"></i></a>` : ''}
+                                  </div>
+                              </div>
+                              <div style="margin: 10px 0;">
+                                  ${dev.languages.map(lang => 
+                                      `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${lang}</span>`
+                                  ).join('')}
+                              </div>
+                              <div style="display: flex; align-items: center; gap: 20px; margin: 15px 0;">
+                                  <div style="background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 4px;">
+                                      Trust Score: ${developer.trustScore}/100
+                                  </div>
+                                  <div style="color: #666;">
+                                      <i class="fas fa-star" style="color: #ffd700;"></i>
+                                      ${developer.rating} (${developer.reviews} reviews)
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+          
+                      <div class="hire-form" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                          <h4 style="margin: 0 0 15px 0; color: #333;">Project Details</h4>
+                          <div style="display: grid; gap: 15px;">
+                              <input type="text" id="projectName_${developer.id}" placeholder="Project Name" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                              <textarea id="projectDesc_${developer.id}" placeholder="Project Description" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; min-height: 100px;"></textarea>
+                              <div style="display: flex; gap: 15px;">
+                                  <input type="number" id="projectBudget_${developer.id}" placeholder="Budget ($)" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                  <input type="text" id="projectTimeframe_${developer.id}" placeholder="Timeframe" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                              </div>
+                              <button onclick="submitHireRequest('${developer.id}')" style="${buttonStyle} background: #007bff; color: #fff;">
+                                  Submit Request
+                              </button>
+                          </div>
+                      </div>
+          
+                      <div class="action-buttons" style="margin-top: 20px;">
+                          <button onclick="toggleHireForm(this)" style="${buttonStyle} background: #007bff; color: #fff;">
+                              Hire Developer
+                          </button>
+                          ${developer.status === 'active' ? `
+                              <button onclick="markComplete('${developer.id}')" style="${buttonStyle} background: #28a745; color: #fff;">
+                                  Mark Complete
+                              </button>
+                              <button onclick="cancelProject('${developer.id}')" style="${buttonStyle} background: #dc3545; color: #fff;">
+                                  Cancel Project
+                              </button>
+                          ` : ''}
+                      </div>
+          
+                      ${developer.status === 'active' ? `
+                          <div class="chat-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                              <h4 style="margin: 0 0 15px 0; color: #333;">Project Chat</h4>
+                              <div class="chat-messages" id="chat_${developer.id}" style="max-height: 200px; overflow-y: auto; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+                              </div>
+                              <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                  <input type="text" id="messageInput_${developer.id}" placeholder="Type your message..." style="flex-grow: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                  <button onclick="sendMessage('${developer.id}')" style="${buttonStyle} background: #007bff; color: #fff;">
+                                      Send
+                                  </button>
+                              </div>
+                          </div>
+                      ` : ''}
+                  </div>
+              `).join('');
+          
+              const script = document.createElement('script');
+              script.textContent = `
+                  function toggleHireForm(button) {
+                      const card = button.closest('.developer-card');
+                      const form = card.querySelector('.hire-form');
+                      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                  }
+          
+                  async function submitHireRequest(devId) {
+                      const projectName = document.getElementById('projectName_' + devId).value;
+                      const projectDesc = document.getElementById('projectDesc_' + devId).value;
+                      const projectBudget = document.getElementById('projectBudget_' + devId).value;
+                      const projectTimeframe = document.getElementById('projectTimeframe_' + devId).value;
+                      
+                      const projectData = {
+                          developerId: devId,
+                          clientId: localStorage.getItem('userEmail'),
+                          projectName,
+                          projectDesc,
+                          projectBudget,
+                          projectTimeframe,
+                          status: 'pending',
+                          timestamp: new Date().toISOString()
+                      };
+
+                      try {
+                          const response = await fetch('https://swifttech-server.onrender.com/hire-request', {
+                              method: 'POST',
+                              headers: {
+                                  'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify(projectData)
+                          });
+
+                          if (!response.ok) {
+                              throw new Error('Network response was not ok');
+                          }
+
+                          alert('Hire request submitted successfully!');
+                          toggleHireForm(document.querySelector('button[onclick="toggleHireForm(this)"]'));
+                      } catch (error) {
+                          console.error('Error submitting hire request:', error);
+                          alert('Failed to submit hire request. Please try again.');
+                      }
+                  }
+          
+                  async function markComplete(devId) {
+                      try {
+                          const projectData = {
+                              developerId: devId,
+                              clientId: localStorage.getItem('userEmail')
+                          };
+
+                          const response = await fetch('https://swifttech-server.onrender.com/mark-complete', {
+                              method: 'POST',
+                              headers: {
+                                  'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify(projectData)
+                          });
+
+                          if (!response.ok) {
+                              throw new Error('Network response was not ok');
+                          }
+
+                          alert('Project marked as complete!');
+                          location.reload();
+                      } catch (error) {
+                          console.error('Error marking project complete:', error);
+                          alert('Failed to mark project as complete. Please try again.');
+                      }
+                  } 
+                      
+                  
+                  async function cancelProject(devId) {
+                      if (confirm('Are you sure you want to cancel this project?')) {
+                          try {
+                              const projectData = {
+                                  developerId: devId,
+                                  clientId: localStorage.getItem('userEmail')
+                              };
+
+                              const response = await fetch('https://swifttech-server.onrender.com/cancel-project', {
+                                  method: 'POST',
+                                  headers: {
+                                      'Content-Type': 'application/json'
+                                  },
+                                  body: JSON.stringify(projectData)
+                              });
+
+                              if (!response.ok) {
+                                  throw new Error('Network response was not ok');
+                              }
+
+                              alert('Project cancelled successfully!');
+                              location.reload();
+                          } catch (error) {
+                              console.error('Error cancelling project:', error);
+                              alert('Failed to cancel project. Please try again.');
+                          }
+                      }
+                  }
+          
+                  async function sendMessage(devId) {
+                      const messageInput = document.getElementById('messageInput_' + devId);
+                      const message = messageInput.value.trim();
+                      
+                      if (message) {
+                          try {
+                              const messageData = {
+                                  developerId: devId,
+                                  senderId: localStorage.getItem('userEmail'),
+                                  message,
+                                  timestamp: new Date().toISOString()
+                              };
+
+                              const response = await fetch('https://swifttech-server.onrender.com/send-message', {
+                                  method: 'POST',
+                                  headers: {
+                                      'Content-Type': 'application/json'
+                                  },
+                                  body: JSON.stringify(messageData)
+                              });
+
+                              if (!response.ok) {
+                                  throw new Error('Network response was not ok');
+                              }
+
+                              messageInput.value = '';
+                              
+                              // Update chat display
+                              const chatDiv = document.getElementById('chat_' + devId);
+                              const messageElement = document.createElement('div');
+                              messageElement.style.margin = '5px 0';
+                              messageElement.style.padding = '8px';
+                              messageElement.style.background = '#fff';
+                              messageElement.style.borderRadius = '4px';
+                              messageElement.textContent = message;
+                              chatDiv.appendChild(messageElement);
+                              chatDiv.scrollTop = chatDiv.scrollHeight;
+                          } catch (error) {
+                              console.error('Error sending message:', error);
+                              alert('Failed to send message. Please try again.');
+                          }
+                      }
+                  }
+
+                  
+                  // Set up real-time chat listeners
+                  function initializeChatListeners(devId) {
+                      fetch('https://swifttech-server.onrender.com/chat-messages/' + devId, {
+                          method: 'GET',
+                          headers: {
+                              'Content-Type': 'application/json'
+                          }
+                      })
+                      .then(response => response.json())
+                      .then(messages => {
+                          const chatDiv = document.getElementById('chat_' + devId);
+                          messages.forEach(message => {
+                              const messageElement = document.createElement('div');
+                              messageElement.style.margin = '5px 0';
+                              messageElement.style.padding = '8px';
+                              messageElement.style.background = '#fff';
+                              messageElement.style.borderRadius = '4px';
+                              messageElement.textContent = message.message;
+                              chatDiv.appendChild(messageElement);
+                              chatDiv.scrollTop = chatDiv.scrollHeight;
+                          });
+                      })
+                      .catch(error => console.error('Error fetching messages:', error));
+                          });
+                  }
+              `;
+              document.body.appendChild(script);
+
+              // Initialize chat listeners for each active developer
+              developers.forEach(dev => {
+                  if (dev.status === 'active') {
+                      initializeChatListeners(dev.id);
+                  }
+              });
+          }          
+          
+
+          
+
                    async function loadTabContent(tabId) {
               const storedEmail = localStorage.getItem('userEmail');
               try {
