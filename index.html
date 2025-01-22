@@ -1104,7 +1104,22 @@
                             }
                         }
                     }
+          
+            
+                    
+                  document.querySelectorAll('.nav-item').forEach(item => {
+                  item.addEventListener('click', () => {
+                  document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                  
+                  item.classList.add('active');
+                  const tabId = item.getAttribute('data-tab');
+                  document.getElementById(tabId).classList.add('active');
 
+                  loadTabContent(tabId);
+              });
+          });
+          
           </script>      
       </body>  
       </html>
