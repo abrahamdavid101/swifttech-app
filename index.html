@@ -869,8 +869,8 @@
                       }
                   }
           
-                  async function sendMessage(devId) {
-                      const messageInput = document.getElementById('messageInput_' + devId);
+                  async function sendMessage(developerId) {
+                      const messageInput = document.getElementById('messageInput_' + developerId);
                       const message = messageInput.value.trim();
                       
                       if (message) {
@@ -882,7 +882,7 @@
                                       'Accept': 'application/json'
                                   },
                                   body: JSON.stringify({
-                                      developerId: devId,
+                                      developerId: developerId,
                                       clientId: localStorage.getItem('userEmail'),
                                       message: message
                                   })
@@ -895,7 +895,7 @@
 
                               messageInput.value = '';                              
                               // Update chat display
-                              const chatDiv = document.getElementById('chat_' + devId);
+                              const chatDiv = document.getElementById('chat_' + developerId);
                               const messageElement = document.createElement('div');
                               messageElement.style.margin = '5px 0';
                               messageElement.style.padding = '8px';
@@ -911,7 +911,7 @@
                       }
                   }
 
-
+                  
                   // Set up real-time chat listeners
                   function initializeChatListeners(devId) {
                       fetch('https://swifttech-server.onrender.com/chat-messages/' + devId, {
