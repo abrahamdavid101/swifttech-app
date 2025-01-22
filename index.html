@@ -755,7 +755,7 @@
                       </div>
           
                       <div class="action-buttons" style="margin-top: 20px;">
-                          <button onclick="hireDeveloper(${JSON.stringify(developer)})" style="${buttonStyle} background: #007bff; color: #fff;">
+                          <button onclick="hireDeveloper('${JSON.stringify(developer).replace(/'/g, "\\'")}')" style="${buttonStyle} background: #007bff; color: #fff;">
                               Hire Developer
                           </button>
                       </div>
@@ -764,7 +764,8 @@
           
               const script = document.createElement('script');
                     script.textContent = `
-                        function hireDeveloper() {
+                        function hireDeveloper(developerStr) {
+                            const developer = JSON.parse(developerStr);
                             localStorage.setItem('selectedDeveloper', JSON.stringify({
                                 name: developer.name,
                                 profilePicture: developer.profilePicture,
@@ -777,8 +778,7 @@
 
             document.body.appendChild(script);
 
-          }          
-    
+          }    
                    async function loadTabContent(tabId) {
               const storedEmail = localStorage.getItem('userEmail');
               try {
