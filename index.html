@@ -319,52 +319,41 @@
               }
 
           checkAuthState(); 
-          
-          async function sendMessage(devId) {
-                        const messageInput = document.getElementById('messageInput_' + devId);
-                        const message = messageInput.value.trim();
+
+                    async function saveChat() {
+                        const selectedDeveloper = JSON.parse(localStorage.getItem('selectedDeveloper'));
+                        const clientEmail = localStorage.getItem('userEmail');
                         
-                        if (message) {
-                            try {
-                                const response = await fetch('https://swifttech-server.onrender.com/send-message', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json'
-                                    },
-                                    body: JSON.stringify({
-                                        developerId: devId,
-                                        clientId: localStorage.getItem('userEmail'),
-                                        message: message
-                                    })
-                                });
+                        try {
+                            const response = await fetch(`${API_URL}/save-chat`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    developerId: selectedDeveloper.id,
+                                    clientId: clientEmail,
+                                    developerName: selectedDeveloper.name,
+                                    developerProfilePicture: selectedDeveloper.profilePicture
+                                })
+                            });
           
-                                if (!response.ok) {
-                                    const errorData = await response.json();
-                                    throw new Error(errorData.message || 'Network response was not ok');
-                                }
-          
-                                messageInput.value = '';
-                                
-                                // Update chat display
-                                const chatDiv = document.getElementById('chat_' + devId);
-                                const messageElement = document.createElement('div');
-                                messageElement.style.margin = '5px 0';
-                                messageElement.style.padding = '8px';
-                                messageElement.style.background = '#fff';
-                                messageElement.style.borderRadius = '4px';
-                                messageElement.textContent = message;
-                                chatDiv.appendChild(messageElement);
-                                chatDiv.scrollTop = chatDiv.scrollHeight;
-                            } catch (error) {
-                                console.error('Error sending message:', error);
-                                alert('Failed to send message. Please try again.');
+                            if (!response.ok) {
+                                throw new Error('Failed to open chat');
                             }
+          
+                            const data = await response.json();
+                            if (data.success) {
+                                console.log('Chat opened successfully');
+                            }
+                        } catch (error) {
+                            console.error('Error opening chat:', error);
+                            throw error;
                         }
                     }
           
-            
-                    
+          
                   document.querySelectorAll('.nav-item').forEach(item => {
                   item.addEventListener('click', () => {
                   document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
@@ -765,244 +754,27 @@
                           </div>
                       </div>
           
-                      <div class="hire-form" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                          <h4 style="margin: 0 0 15px 0; color: #333;">Project Details</h4>
-                          <div style="display: grid; gap: 15px;">
-                              <input type="text" id="projectName_${developer.id}" placeholder="Project Name" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                              <textarea id="projectDesc_${developer.id}" placeholder="Project Description" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; min-height: 100px;"></textarea>
-                              <div style="display: flex; gap: 15px;">
-                                  <input type="number" id="projectBudget_${developer.id}" placeholder="Budget ($)" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                                  <input type="text" id="projectTimeframe_${developer.id}" placeholder="Timeframe" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                              </div>
-                              <button onclick="submitHireRequest('${developer.id}')" style="${buttonStyle} background: #007bff; color: #fff;">
-                                  Submit Request
-                              </button>
-                          </div>
-                      </div>
-          
                       <div class="action-buttons" style="margin-top: 20px;">
-                          <button onclick="toggleHireForm(this)" style="${buttonStyle} background: #007bff; color: #fff;">
+                          <button onclick="hireDeveloper(${JSON.stringify(developer)})" style="${buttonStyle} background: #007bff; color: #fff;">
                               Hire Developer
                           </button>
-                          ${developer.status === 'active' ? `
-                              <button onclick="markComplete('${developer.id}')" style="${buttonStyle} background: #28a745; color: #fff;">
-                                  Mark Complete
-                              </button>
-                              <button onclick="cancelProject('${developer.id}')" style="${buttonStyle} background: #dc3545; color: #fff;">
-                                  Cancel Project
-                              </button>
-                          ` : ''}
                       </div>
-          
-                      ${developer.online === true ? `
-                          <div class="chat-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                              <h4 style="margin: 0 0 15px 0; color: #333;">Project Chat</h4>
-                              <div class="chat-messages" id="chat_${developer.id}" style="max-height: 200px; overflow-y: auto; padding: 10px; background: #f8f9fa; border-radius: 4px;">
-                              </div>
-                              <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                  <input type="text" id="messageInput_${developer.id}" placeholder="Type your message..." style="flex-grow: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                                  <button onclick="sendMessage('${developer.id}')" style="${buttonStyle} background: #007bff; color: #fff;">
-                                      Send
-                                  </button>
-                              </div>
-                          </div>
-                      ` : ''}
                   </div>
               `).join('');
           
               const script = document.createElement('script');
               script.textContent = `
-                  function toggleHireForm(button) {
-                      const card = button.closest('.developer-card');
-                      const form = card.querySelector('.hire-form');
-                      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                  function hireDeveloper(developer) {
+                      localStorage.setItem('selectedDeveloper', JSON.stringify({
+                          name: developer.name,
+                          profilePicture: developer.profilePicture,
+                          id: developer.id
+                      }));
+                      saveChat();
+                      openChat();
                   }
-          
-                  async function submitHireRequest(devId) {
-                      const projectName = document.getElementById('projectName_' + devId).value;
-                      const projectDesc = document.getElementById('projectDesc_' + devId).value;
-                      const projectBudget = document.getElementById('projectBudget_' + devId).value;
-                      const projectTimeframe = document.getElementById('projectTimeframe_' + devId).value;
-                      
-                      const projectData = {
-                          developerId: devId,
-                          clientId: localStorage.getItem('userEmail'),
-                          projectName,
-                          projectDesc,
-                          projectBudget,
-                          projectTimeframe,
-                          status: 'pending',
-                          timestamp: new Date().toISOString()
-                      };
+                `;
 
-                      try {
-                          const response = await fetch('https://swifttech-server.onrender.com/hire-request', {
-                              method: 'POST',
-                              headers: {
-                                  'Content-Type': 'application/json'
-                              },
-                              body: JSON.stringify(projectData)
-                          });
-
-                          if (!response.ok) {
-                              throw new Error('Network response was not ok');
-                          }
-
-                          alert('Hire request submitted successfully!');
-                          toggleHireForm(document.querySelector('button[onclick="toggleHireForm(this)"]'));
-                      } catch (error) {
-                          console.error('Error submitting hire request:', error);
-                          alert('Failed to submit hire request. Please try again.');
-                      }
-                  }
-          
-                  async function markComplete(devId) {
-                      try {
-                          const projectData = {
-                              developerId: devId,
-                              clientId: localStorage.getItem('userEmail')
-                          };
-
-                          const response = await fetch('https://swifttech-server.onrender.com/mark-complete', {
-                              method: 'POST',
-                              headers: {
-                                  'Content-Type': 'application/json'
-                              },
-                              body: JSON.stringify(projectData)
-                          });
-
-                          if (!response.ok) {
-                              throw new Error('Network response was not ok');
-                          }
-
-                          alert('Project marked as complete!');
-                          location.reload();
-                      } catch (error) {
-                          console.error('Error marking project complete:', error);
-                          alert('Failed to mark project as complete. Please try again.');
-                      }
-                  } 
-                      
-                  
-                  async function cancelProject(devId) {
-                      if (confirm('Are you sure you want to cancel this project?')) {
-                          try {
-                              const projectData = {
-                                  developerId: devId,
-                                  clientId: localStorage.getItem('userEmail')
-                              };
-
-                              const response = await fetch('https://swifttech-server.onrender.com/cancel-project', {
-                                  method: 'POST',
-                                  headers: {
-                                      'Content-Type': 'application/json'
-                                  },
-                                  body: JSON.stringify(projectData)
-                              });
-
-                              if (!response.ok) {
-                                  throw new Error('Network response was not ok');
-                              }
-
-                              alert('Project cancelled successfully!');
-                              location.reload();
-                          } catch (error) {
-                              console.error('Error cancelling project:', error);
-                              alert('Failed to cancel project. Please try again.');
-                          }
-                      }
-                  }
-          
-                  async function sendMessage(devId) {
-                      const messageInput = document.getElementById('messageInput_' + devId);
-                      const message = messageInput.value.trim();
-                      
-                      if (message) {
-                          try {
-                              const response = await fetch('https://swifttech-server.onrender.com/send-message', {
-                                  method: 'POST',
-                                  headers: {
-                                      'Content-Type': 'application/json',
-                                      'Accept': 'application/json'
-                                  },
-                                  body: JSON.stringify({
-                                      developerId: devId,
-                                      clientId: localStorage.getItem('userEmail'),
-                                      message: message
-                                  })
-                              });
-
-                              if (!response.ok) {
-                                  const errorData = await response.json();
-                                  throw new Error(errorData.message || 'Network response was not ok');
-                              }
-
-                              messageInput.value = '';                              
-                              // Update chat display
-                              const chatDiv = document.getElementById('chat_' + devId);
-                              const messageElement = document.createElement('div');
-                              messageElement.style.margin = '5px 0';
-                              messageElement.style.padding = '8px';
-                              messageElement.style.background = '#fff';
-                              messageElement.style.borderRadius = '4px';
-                              messageElement.textContent = message;
-                              chatDiv.appendChild(messageElement);
-                              chatDiv.scrollTop = chatDiv.scrollHeight;
-                          } catch (error) {
-                              console.error('Error sending message:', error);
-                              alert('Failed to send message. Please try again.');
-                          }
-                      }
-                  }
-
-
-                  // Set up real-time chat listeners
-                  function initializeChatListeners(devId) {
-                      fetch('https://swifttech-server.onrender.com/chat-messages/' + devId, {
-                          method: 'GET',
-                          headers: {
-                              'Content-Type': 'application/json',
-                              'Accept': 'application/json'
-                          }
-                      })
-                      .then(response => {
-                          if (!response.ok) {
-                              throw new Error('Network response was not ok');
-                          }
-                          return response.json();
-                      })
-                      .then(data => {
-                          const chatDiv = document.getElementById('chat_' + devId);
-                          if (!chatDiv) {
-                              console.error('Chat div not found for developer:', devId);
-                              return;
-                          }
-                          
-                          const messages = data.messages || [];
-                          if (Array.isArray(messages)) {
-                              messages.forEach(message => {
-                                  const messageElement = document.createElement('div');
-                                  messageElement.style.margin = '5px 0';
-                                  messageElement.style.padding = '8px';
-                                  messageElement.style.background = '#fff';
-                                  messageElement.style.borderRadius = '4px';
-                                  messageElement.textContent = message.message || '';
-                                  chatDiv.appendChild(messageElement);
-                                  chatDiv.scrollTop = chatDiv.scrollHeight;
-                              });
-                          } else {
-                              console.error('Messages is not an array:', data);
-                          }
-                      })
-                      .catch(error => {
-                          console.error('Error fetching messages:', error);
-                          const chatDiv = document.getElementById('chat_' + devId);
-                          if (chatDiv) {
-                              chatDiv.innerHTML = '<div class="error">Failed to load messages. Please try again.</div>';
-                          }
-                      });
-}                                    
-`;
               document.body.appendChild(script);
 
               // Initialize chat listeners for each active developer
