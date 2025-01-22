@@ -226,7 +226,7 @@
               <div id="hire" class="tab-content">
                   <div class="content-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                       <h3>Hire Developers</h3>
-                      <div id="developersList">Loading developers...</div>
+                      <div id="hireList">Loading developers...</div>
                   </div>
               </div>
 
@@ -657,9 +657,14 @@
           }
 
           
-          
-        async function renderHire(hire) {
-              const cardContainer = document.getElementById('hireContent');
+
+        async function renderHire(developers) {
+              const cardContainer = document.getElementById('hireList');
+              const developersGrid = document.createElement('div');
+              developersGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';
+              cardContainer.innerHTML = '';
+              cardContainer.appendChild(developersGrid);
+
               const cardStyle = `
                   background: #fff;
                   border-radius: 12px;
@@ -680,8 +685,8 @@
                   margin: 5px;
               `;
           
-              cardContainer.innerHTML = developers.map(dev => `
-                  <div class="developer-card" style="${cardStyle}">
+              developersGrid.innerHTML = Object.values(developers).map(dev => `                  
+              <div class="developer-card" style="${cardStyle}">
                       <div style="display: flex; align-items: start; gap: 20px;">
                           <img src="${developer.profilePicture}" alt="${developer.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
                           <div style="flex-grow: 1;">
