@@ -904,8 +904,46 @@
                       </div>
                   </div>
               `;
-          }
 
+              const activeProjectsList = document.getElementById('activeProjectsList');
+              if (data.projects) {
+                  const activeProjects = data.projects.filter(project => project.status === 'In Progress');
+                  if (activeProjects.length > 0) {
+                      activeProjectsList.innerHTML = activeProjects.map(project => `
+                          <div class="active-project-item" style="padding: 15px; margin-bottom: 10px; border-radius: 8px; background: #f8f9fa; border-left: 4px solid #28a745;">
+                              <div style="display: flex; justify-content: space-between; align-items: center;">
+                                  <h4 style="color: #333; margin: 0;">${project.name}</h4>
+                                  <span style="background: #e8f5e9; color: #28a745; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">Active</span>
+                              </div>
+                              <p style="color: #666; margin: 5px 0;">Progress: ${project.progress || '0'}%</p>
+                              <div style="background: #e9ecef; height: 6px; border-radius: 3px; margin-top: 8px;">
+                                  <div style="background: #28a745; width: ${project.progress || '0'}%; height: 100%; border-radius: 3px;"></div>
+                              </div>
+                          </div>
+                      `).join('');
+                  } else {
+                      activeProjectsList.innerHTML = '<div style="text-align: center; color: #666;">No active projects</div>';
+                  }
+              }
+
+              const chatList = document.getElementById('chatList');
+              if (data.developers) {
+                  chatList.innerHTML = data.developers.map(dev => `
+                      <div class="chat-item" style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
+                          <img src="${dev.profilePicture || 'default-avatar.png'}" alt="${dev.name}" style="width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover;">
+                          <div style="flex-grow: 1;">
+                              <div style="display: flex; justify-content: space-between; align-items: center;">
+                                  <h4 style="color: #333; margin: 0; font-size: 0.95rem;">${dev.name}</h4>
+                                  <span style="background: #e3f2fd; color: #1a73e8; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem;">${dev.status || 'Online'}</span>
+                              </div>
+                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${dev.role || 'Developer'}</p>
+                          </div>
+                      </div>
+                  `).join('');
+              } else {
+                  chatList.innerHTML = '<div style="text-align: center; color: #666;">No developers available</div>';
+              }
+          }          
           loadTabContent('dashboard');
           </script>      
       </body>  
