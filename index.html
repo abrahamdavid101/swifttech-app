@@ -230,7 +230,7 @@
 
                       <div class="chat-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                           <h3 style="margin-bottom: 20px; color: #1a73e8;">Developer Chat</h3>
-                          <div class="chat-list" id="chatList">
+                          <div class="chat-list" id="chatLists">
                               Loading developers...
                           </div>
                       </div>                  
@@ -926,25 +926,26 @@
                   }
               }
 
-              const chatList = document.getElementById('chatList');
-              if (data.swifttech.developers) {
-                  chatList.innerHTML = `
+              const chatList = document.getElementById('chatLists');
+              if (data.swifttech && data.swifttech.developers) {
+                  const developers = Array.isArray(data.swifttech.developers) ? data.swifttech.developers : [data.swifttech.developers];
+                  chatList.innerHTML = developers.map(dev => `
                       <div class="chat-item" style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
-                          <img src="${data.swifttech.developers.profilePicture || 'default-avatar.png'}" alt="${data.swifttech.developers.name}" style="width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover;">
+                          <img src="${dev.profilePicture || 'default-avatar.png'}" alt="${dev.name}" style="width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover;">
                           <div style="flex-grow: 1;">
                               <div style="display: flex; justify-content: space-between; align-items: center;">
-                                  <h4 style="color: #333; margin: 0; font-size: 0.95rem;">${data.swifttech.developers.name}</h4>
+                                  <h4 style="color: #333; margin: 0; font-size: 0.95rem;">${dev.name}</h4>
                                   <span style="background: #e3f2fd; color: #1a73e8; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem;">${dev.status || 'Online'}</span>
                               </div>
-                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${data.swifttech.developers.job || 'Developer'}</p>
+                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${dev.job || 'Developer'}</p>
                           </div>
                       </div>
-                  `
+                  `).join('');
               } else {
                   chatList.innerHTML = '<div style="text-align: center; color: #666;">No developers available</div>';
               }
           }          
-          loadTabContent('dashboard');
+          loadTabContent('dashboard');          
           </script>      
           </body>  
       </html>
