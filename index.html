@@ -928,15 +928,51 @@
 
               const chatList = document.getElementById('chatList');
               if (data.swifttech.developers) {
-                  chatList.innerHTML = Object.values(data.swifttech.developers).map(dev => `
-                      <div class="chat-item" style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
-                          <img src="${dev.profilePicture || 'default-avatar.png'}" alt="${dev.name}" style="width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover;">
-                          <div style="flex-grow: 1;">
-                              <div style="display: flex; justify-content: space-between; align-items: center;">
-                                  <h4 style="color: #333; margin: 0; font-size: 0.95rem;">${dev.name}</h4>
-                                  <span style="background: #e3f2fd; color: #1a73e8; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem;">${dev.status || 'Online'}</span>
+                  const developersGrid = document.createElement('div');
+                  developersGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;';
+                  chatList.innerHTML = '';
+                  chatList.appendChild(developersGrid);
+
+                  const cardStyle = `
+                      background: #fff;
+                      border-radius: 12px;
+                      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                      margin: 10px;
+                      padding: 15px;
+                      transition: all 0.3s ease;
+                      font-family: 'Montserrat', sans-serif;
+                  `;
+
+                  developersGrid.innerHTML = Object.values(data.swifttech.developers).map(developer => `
+                      <div class="developer-card" style="${cardStyle}">
+                          <div style="display: flex; align-items: start; gap: 20px;">
+                              <div style="position: relative;">
+                                  <img src="${developer.profilePicture || 'default-avatar.png'}" alt="${developer.name}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                                  <div style="position: absolute; bottom: 8px; right: 7px; width: 16px; height: 16px; border-radius: 50%; background-color: ${developer.online === true ? '#2ecc71' : '#95a5a6'}; border: 2px solid white;"></div>
                               </div>
-                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${dev.role || 'Developer'}</p>
+                              <div style="flex-grow: 1;">
+                                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                                      <h3 style="margin: 0; color: #333; font-size: 1.1em;">
+                                          ${developer.name}
+                                          ${developer.verifiedBadge === true ? '<span><i class="fa-solid fa-circle-check" style="color: #0762f2;"></i></span>' : ''}
+                                      </h3>
+                                      <div style="display: flex; gap: 10px;">
+                                          ${developer.linkedinProfile ? `<a href="${developer.linkedinProfile}" target="_blank" style="color: #0077b5;"><i class="fab fa-linkedin"></i></a>` : ''}
+                                          ${developer.behanceProfile ? `<a href="${developer.behanceProfile}" target="_blank" style="color: #1769ff;"><i class="fab fa-behance"></i></a>` : ''}
+                                      </div>
+                                  </div>
+                                  <div style="margin: 2px 0;">
+                                      <p style="color: #666; margin: 5px 0; font-size: 0.9em;">${developer.job || 'Developer'}</p>
+                                      ${developer.languages ? developer.languages.map(lang =>
+                                          `<span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; margin-right: 8px; font-size: 0.8em; color: #666;">${lang}</span>`
+                                      ).join('') : ''}
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 20px; margin: 15px 0;">
+                                      <div style="background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 4px;">
+                                          Trust Score: ${developer.trustScore || '0'}/100
+                                      </div>
+                                  </div>
+                              </div>
                           </div>
                       </div>
                   `).join('');
@@ -944,7 +980,7 @@
                   chatList.innerHTML = '<div style="text-align: center; color: #666;">No developers available</div>';
               }
           }          
-          loadTabContent('dashboard');
+          loadTabContent('dashboard');          
           </script>      
           </body>  
       </html>
