@@ -927,7 +927,7 @@
               }
 
               const chatList = document.getElementById('chatLists');
-              if (data.swifttech && data.swifttech.developers) {
+              if (data.swifttech.developers) {
                   const developers = Array.isArray(data.swifttech.developers) ? data.swifttech.developers : [data.swifttech.developers];
                   chatList.innerHTML = developers.map(dev => `
                       <div class="chat-item" style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
