@@ -927,19 +927,19 @@
               }
 
               const chatList = document.getElementById('chatList');
-              if (data.developers) {  // Changed from data.swifttech.developers
-                  chatList.innerHTML = Object.values(data.developers).map(dev => `
+              if (data.swifttech.developers) {
+                  chatList.innerHTML = `
                       <div class="chat-item" style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
-                          <img src="${dev.profilePicture || 'default-avatar.png'}" alt="${dev.name}" style="width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover;">
+                          <img src="${data.swifttech.developers.profilePicture || 'default-avatar.png'}" alt="${data.swifttech.developers.name}" style="width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover;">
                           <div style="flex-grow: 1;">
                               <div style="display: flex; justify-content: space-between; align-items: center;">
-                                  <h4 style="color: #333; margin: 0; font-size: 0.95rem;">${dev.name}</h4>
+                                  <h4 style="color: #333; margin: 0; font-size: 0.95rem;">${data.swifttech.developers.name}</h4>
                                   <span style="background: #e3f2fd; color: #1a73e8; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem;">${dev.status || 'Online'}</span>
                               </div>
-                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${dev.role || 'Developer'}</p>
+                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${data.swifttech.developers.job || 'Developer'}</p>
                           </div>
                       </div>
-                  `).join('');
+                  `
               } else {
                   chatList.innerHTML = '<div style="text-align: center; color: #666;">No developers available</div>';
               }
