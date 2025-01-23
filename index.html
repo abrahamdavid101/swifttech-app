@@ -927,7 +927,22 @@
               }
 
               const chatList = document.getElementById('chatLists');
-              if (data.swifttech && data.swifttech.developers) {
+              if (data.swifttech && Array.isArray(data.swifttech.developers) && data.swifttech.developers.length > 0) {
+                  chatList.innerHTML = data.swifttech.developers.map(dev => `
+                      <div class="chat-item" style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
+                          <img src="${dev.profilePicture || 'default-avatar.png'}" alt="${dev.name}" style="width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover;">
+                          <div style="flex-grow: 1;">
+                              <div style="display: flex; justify-content: space-between; align-items: center;">
+                                  <h4 style="color: #333; margin: 0; font-size: 0.95rem;">${dev.name}</h4>
+                                  <span style="background: ${dev.online ? '#e3f2fd' : '#ffebee'}; color: ${dev.online ? '#1a73e8' : '#d32f2f'}; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem;">
+                                      ${dev.online ? 'Online' : 'Offline'}
+                                  </span>
+                              </div>
+                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${dev.job} • ${dev.hourlyRate}/hr</p>
+                          </div>
+                      </div>
+                  `).join('');
+              } else if (data.swifttech && typeof data.swifttech.developers === 'object' && Object.keys(data.swifttech.developers).length > 0) {
                   const developers = Object.values(data.swifttech.developers);
                   chatList.innerHTML = developers.map(dev => `
                       <div class="chat-item" style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
@@ -939,14 +954,15 @@
                                       ${dev.online ? 'Online' : 'Offline'}
                                   </span>
                               </div>
-                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${dev.job} • $${dev.hourlyRate}/hr</p>
+                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${dev.job} • ${dev.hourlyRate}/hr</p>
                           </div>
                       </div>
                   `).join('');
               } else {
-                  chatList.innerHTML = '<div style="text-align: center; color: #666;">No developers available</div>';
+                  chatList.innerHTML = '<div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; color: #666;">Loading developers...</div>';
               }
           }          
-          loadTabContent('dashboard');          </script>      
+          loadTabContent('dashboard');          
+          </script>      
           </body>  
       </html>
