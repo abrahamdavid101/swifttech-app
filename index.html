@@ -211,15 +211,6 @@
                                   <div style="text-align: center; padding: 20px;">Loading current user...</div>
                               </div>
                           </div>
-
-                          <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
-
-                          <div>
-                              <h3 style="margin-bottom: 20px;">Recent Activity</h3>
-                              <div class="activity-list" id="activityList">
-                                  <div style="text-align: center; padding: 20px;">Loading recent activity...</div>
-                              </div>
-                          </div>
                       </div>
                       <div class="projects-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                           <h3 style="margin-bottom: 20px; color: #28a745;">Active Projects</h3>
@@ -819,7 +810,6 @@
                   switch(tabId) {
                       case 'dashboard':
                           updateDashboard(data);
-                          renderDashboard(data.swifttech.developers);
                           break;
                       case 'templates':
                           renderTemplates(data.swifttech.templates);
@@ -928,23 +918,9 @@
               }
 
               const chatList = document.getElementById('chatLists');
-              if (data.swifttech.developers) {
-                  const developers = Array.isArray(data.swifttech.developers) ? data.swifttech.developers : [data.swifttech.developers];
-                  chatList.innerHTML = developers.map(dev => `
-                      <div class="chat-item" style="display: flex; align-items: center; padding: 12px; margin-bottom: 10px; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
-                          <img src="${dev.profilePicture || 'default-avatar.png'}" alt="${dev.name}" style="width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover;">
-                          <div style="flex-grow: 1;">
-                              <div style="display: flex; justify-content: space-between; align-items: center;">
-                                  <h4 style="color: #333; margin: 0; font-size: 0.95rem;">${dev.name}</h4>
-                                  <span style="background: #e3f2fd; color: #1a73e8; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem;">${dev.status || 'Online'}</span>
-                              </div>
-                              <p style="color: #666; margin: 4px 0 0; font-size: 0.85rem;">${dev.job || 'Developer'}</p>
-                          </div>
-                      </div>
-                  `).join('');
-              } else {
-                  chatList.innerHTML = '<div style="text-align: center; color: #666;">No developers available</div>';
-              }
+              chatList.innerHTML = `
+                  <iframe src="https://app.swifttech.me/chat" style="width: 100%; height: 400px; border: none; border-radius: 8px; margin-bottom: 15px;"></iframe>
+              `;
           }          
           loadTabContent('dashboard');          
           </script>      
