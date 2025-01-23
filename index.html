@@ -193,23 +193,51 @@
                       </div>
                   </div>
 
-                  <div class="dashboard-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                  
+                  <div class="dashboard-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                       <div class="main-content" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                          <h3 style="margin-bottom: 20px;">Recent Projects</h3>
-                          <div class="project-list" id="projectList">
-                              <div style="text-align: center; padding: 20px;">Loading projects...</div>
+                          <div>
+                              <h3 style="margin-bottom: 20px;">Recent Projects</h3>
+                              <div class="project-list" id="projectList">
+                                  <div style="text-align: center; padding: 20px;">Loading projects...</div>
+                              </div>
+                          </div>
+                          
+                          <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+                          
+                          <div>
+                              <h3 style="margin-bottom: 20px;">Current User</h3>
+                              <div class="team-list" id="teamList">
+                                  <div style="text-align: center; padding: 20px;">Loading current user...</div>
+                              </div>
+                          </div>
+
+                          <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+
+                          <div>
+                              <h3 style="margin-bottom: 20px;">Recent Activity</h3>
+                              <div class="activity-list" id="activityList">
+                                  <div style="text-align: center; padding: 20px;">Loading recent activity...</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="projects-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                          <h3 style="margin-bottom: 20px; color: #28a745;">Active Projects</h3>
+                          <div class="active-projects" id="activeProjectsList">
+                              Loading active projects...
                           </div>
                       </div>
 
-                      <div class="side-content" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                          <h3 style="margin-bottom: 20px;">Current User</h3>
-                          <div class="team-list" id="teamList">
-                              <div style="text-align: center; padding: 20px;">Loading current user...</div>
+                      <div class="chat-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                          <h3 style="margin-bottom: 20px; color: #1a73e8;">Developer Chat</h3>
+                          <div class="chat-list" id="chatList">
+                              Loading developers...
                           </div>
-                      </div>
-                  </div>
-              </div>
-
+                      </div>                  
+                    
+                    </div>
+              </div>              
+              
               <div id="templates" class="tab-content">
                   <div class="content-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                       <h3>Templates</h3>
@@ -276,50 +304,50 @@
 
       <script>
           const API_URL = 'https://swifttech-server.onrender.com';
+ 
 
-          // Check authentication state on page load and verify server connection
-          async function checkAuthState() {
-              const storedEmail = localStorage.getItem('userEmail');
-              
-              console.log('Stored email:', storedEmail);
-              
-              if (!storedEmail || storedEmail === 'null' || storedEmail === 'undefined' || !storedEmail.includes('@')) {
-                  console.log('Invalid email - redirecting to login');
-                  localStorage.clear();
-                  setTimeout(() => {
-                      window.location.href = 'login.html';
-                  }, 70);
-                  return;
-              }
-              
-              try {
-                  const response = await fetch(`${API_URL}/check-login-state`, {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json',
-                          'Accept': 'application/json'
-                      },
-                      body: JSON.stringify({
-                          email: storedEmail
-                      })
-                  });              
-                  const data = await response.json();
-                  
-                  if (data.loginState === true) {
-                      console.log(true);
-                  } else {
-                      window.location.href = 'login.html';
-                  }
-                  
-                  } catch (error) {
-                      console.error('Error checking login state:', error);
-                      localStorage.clear();
-                      window.location.replace('login.html');
-                  }
-              }
+                    // Check authentication state on page load and verify server connection
+                    async function checkAuthState() {
+                        const storedEmail = localStorage.getItem('userEmail');
+                        
+                        console.log('Stored email:', storedEmail);
+                        
+                        if (!storedEmail || storedEmail === 'null' || storedEmail === 'undefined' || !storedEmail.includes('@')) {
+                            console.log('Invalid email - redirecting to login');
+                            localStorage.clear();
+                            setTimeout(() => {
+                                window.location.href = 'login.html';
+                            }, 70);
+                            return;
+                        }
+                        
+                        try {
+                            const response = await fetch(`${API_URL}/check-login-state`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    email: storedEmail
+                                })
+                            });              
+                            const data = await response.json();
+                            
+                            if (data.loginState === true) {
+                                console.log(true);
+                            } else {
+                                window.location.href = 'login.html';
+                            }
+                            
+                            } catch (error) {
+                                console.error('Error checking login state:', error);
+                                localStorage.clear();
+                                window.location.replace('login.html');
+                            }
+                        }
 
-          checkAuthState(); 
-
+                    checkAuthState();
                     async function saveChat() {
                         const developerId = localStorage.getItem('selectedDeveloperId');
                         const developerName = localStorage.getItem('selectedDeveloperName');
