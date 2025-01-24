@@ -172,7 +172,7 @@
           // Load messages
           function loadMessages(devId) {
               const clientEmail = localStorage.getItem('userEmail');
-              fetch(`https://swifttech-server.onrender.com/messages/${devId}/${clientEmail}`)
+              fetch(`https://swifttech-server.onrender.com/messages`)
                   .then(response => {
                       if (!response.ok) {
                           throw new Error('Network response was not ok');
@@ -180,13 +180,16 @@
                       return response.json();
                   })
                   .then(messages => {
+                      console.log(messages);
                       const container = document.getElementById('messagesContainer');
                       container.innerHTML = '';
                     
-                      if (Array.isArray(messages)) {
-                          messages.forEach(msg => {
+                      if (messages && messages[devId] && messages[devId][clientEmail.replace(/\./g, '')] && messages[devId][clientEmail.replace(/\./g, '')].messages) {
+                          const chatMessages = messages[devId][clientEmail.replace(/\./g, '')].messages;
+                          chatMessages.forEach(msg => {
                               const messageDiv = document.createElement('div');
-                              messageDiv.className = `message ${msg.senderId === clientEmail.replace(/\./g, '') ? 'sent' : 'received'}`;                              messageDiv.textContent = msg.message;
+                              messageDiv.className = `message ${msg.senderId === clientEmail ? 'sent' : 'received'}`;
+                              messageDiv.textContent = msg.message;
                               container.appendChild(messageDiv);
                           });
                       }
@@ -197,6 +200,7 @@
                       console.error('Error loading messages:', error);
                   });
           }
+
 
           // Send message
           document.getElementById('sendMessage').addEventListener('click', () => {
@@ -210,7 +214,7 @@
               }
             
               if (message && selectedDeveloperId) {
-                  fetch('https://swifttech-server.onrender.com/messages', {
+                  fetch('https://swifttech-server.onrender.com/message', {
                       method: 'POST',
                       headers: {
                           'Content-Type': 'application/json',
