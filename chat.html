@@ -207,7 +207,8 @@
           document.getElementById('sendMessage').addEventListener('click', () => {
               const input = document.getElementById('messageInput');
               const message = input.value.trim();
-              const clientEmail = localStorage.getItem('userEmail');
+              const clientEmail = localStorage.getItem('userEmail').replace('.', '');
+              console.log(clientEmail);
             
               if (!clientEmail) {
                   alert('Please log in first');
