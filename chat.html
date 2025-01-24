@@ -171,7 +171,8 @@
 
           // Load messages
           function loadMessages(developerId) {
-              fetch(`https://swifttech-server.onrender.com/messages/${developerId}`)
+              const clientEmail = localStorage.getItem('userEmail');
+              fetch(`https://swifttech-server.onrender.com/messages/${developerId}/${clientEmail}`)
                   .then(response => response.json())
                   .then(messages => {
                       const container = document.getElementById('messagesContainer');
@@ -179,7 +180,7 @@
                     
                       messages.forEach(msg => {
                           const messageDiv = document.createElement('div');
-                          messageDiv.className = `message ${msg.isOwnMessage ? 'sent' : 'received'}`;
+                          messageDiv.className = `message ${msg.senderId === clientEmail ? 'sent' : 'received'}`;
                           messageDiv.textContent = msg.message;
                           container.appendChild(messageDiv);
                       });
@@ -192,6 +193,7 @@
           document.getElementById('sendMessage').addEventListener('click', () => {
               const input = document.getElementById('messageInput');
               const message = input.value.trim();
+              const clientEmail = localStorage.getItem('userEmail');
             
               if (message && selectedDeveloperId) {
                   fetch('https://swifttech-server.onrender.com/messages', {
@@ -201,6 +203,7 @@
                       },
                       body: JSON.stringify({
                           developerId: selectedDeveloperId,
+                          clientEmail: clientEmail,
                           message: message
                       })
                   })
@@ -212,7 +215,6 @@
                   });
               }
           });
-
           // Back button
           document.querySelector('.back-button').addEventListener('click', () => {
               document.getElementById('developerList').style.display = 'grid';
