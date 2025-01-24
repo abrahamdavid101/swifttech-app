@@ -892,28 +892,28 @@
                               <span style="position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: #10B981; border-radius: 50%; border: 2px solid #fff;"></span>
                           </div>
                           <div style="margin-left: 20px;">
-                              <h4 style="color: #1F2937; font-size: 1.1rem; font-weight: 600; margin: 0;">${data.profile?.email || 'Unknown User'}</h4>
+                              <h4 style="color: #1F2937; font-size: 0.8rem; font-weight: 400; margin: 0;">${data.profile?.email || 'Unknown User'}</h4>
                               <div style="display: flex; align-items: center; margin-top: 5px;">
                                   <span style="background: ${data.accountStatus === 'active' ? '#ECFDF5' : '#FEF2F2'}; color: ${data.accountStatus === 'active' ? '#059669' : '#DC2626'}; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">${data.accountStatus || 'active'}</span>
                                   <span style="background: #EEF2FF; color: #4F46E5; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; margin-left: 8px;">${localStorage.getItem('userPlan') || 'free'}</span>
                               </div>
                           </div>
                       </div>
-                      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
-                          <div style="background: #F3F4F6; padding: 15px; border-radius: 12px; text-align: center;">
-                              <h5 style="color: #4B5563; font-size: 0.9rem; margin: 0 0 5px 0;">Completed Courses</h5>
-                              <p style="color: #1F2937; font-size: 1.2rem; font-weight: 600; margin: 0;">${data.completedCourses || '0'}</p>
+                      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                          <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                              <h5 style="color: #374151; font-size: 0.9rem; margin: 0 0 5px 0;">Completed Courses</h5>
+                              <p style="color: #111827; font-size: 1.1rem; font-weight: 500; margin: 0;">${data.completedCourses || '0'}</p>
                           </div>
-                          <div style="background: #F3F4F6; padding: 15px; border-radius: 12px; text-align: center;">
-                              <h5 style="color: #4B5563; font-size: 0.9rem; margin: 0 0 5px 0;">Enrolled Courses</h5>
-                              <p style="color: #1F2937; font-size: 1.2rem; font-weight: 600; margin: 0;">${data.enrolledCourses || '0'}</p>
+                          <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                              <h5 style="color: #374151; font-size: 0.9rem; margin: 0 0 5px 0;">Enrolled Courses</h5>
+                              <p style="color: #111827; font-size: 1.1rem; font-weight: 500; margin: 0;">${data.enrolledCourses || '0'}</p>
                           </div>
-                          <div style="background: #F3F4F6; padding: 15px; border-radius: 12px; text-align: center;">
-                              <h5 style="color: #4B5563; font-size: 0.9rem; margin: 0 0 5px 0;">Trust Score</h5>
-                              <p style="color: #1F2937; font-size: 1.2rem; font-weight: 600; margin: 0;">${data.trustScore || '100'}</p>
+                          <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                              <h5 style="color: #374151; font-size: 0.9rem; margin: 0 0 5px 0;">Trust Score</h5>
+                              <p style="color: #111827; font-size: 1.1rem; font-weight: 500; margin: 0;">${data.trustScore || '100'}</p>
                           </div>
+                      </div>                  
                       </div>
-                  </div>
               `;
 
 
