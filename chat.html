@@ -215,7 +215,7 @@
                   return;
               }
             
-              if (message && selectedDeveloperId) {
+              if (message && devId) {
                   fetch('https://swifttech-server.onrender.com/message', {
                       method: 'POST',
                       headers: {
@@ -223,7 +223,7 @@
                           'Accept': 'application/json'
                       },
                       body: JSON.stringify({
-                          developerId: selectedDeveloperId,
+                          developerId: devId,
                           clientEmail: clientEmail,
                           message: message
                       })
