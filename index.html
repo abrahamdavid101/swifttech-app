@@ -899,18 +899,10 @@
                               </div>
                           </div>
                       </div>
-                      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-                          <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                              <h5 style="color: #374151; font-size: 0.9rem; margin: 0 0 5px 0;">Completed Courses</h5>
-                              <p style="color: #111827; font-size: 1.1rem; font-weight: 500; margin: 0;">${data.courses?.completed || '0'} <span style="font-size: 0.8rem; color: #6B7280;">(${data.courses?.completionDate || 'none'} - ${data.courses?.name || 'none'})</span></p>
-                          </div>
-                          <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                              <h5 style="color: #374151; font-size: 0.9rem; margin: 0 0 5px 0;">Enrolled Courses</h5>
-                              <p style="color: #111827; font-size: 1.1rem; font-weight: 500; margin: 0;">${data.courses?.enrolled || '0'} <span style="font-size: 0.8rem; color: #6B7280;">(${data.courses?.enrolled.name || 'none'} - Progress: ${data.enrolled?.progress || '0'}%)</span></p>
-                          </div>                          
+                      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">                        
                           <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                               <h5 style="color: #374151; font-size: 0.9rem; margin: 0 0 5px 0;">Trust Score</h5>
-                              <p style="color: #111827; font-size: 1.1rem; font-weight: 500; margin: 0;">${data.profile?.trustScore || '100'}</p>
+                              <p style="color: #111827; font-size: 1.1rem; font-weight: 500; margin: 0;">${data.trustScore || '100'}</p>
                           </div>
                       </div>                  
                       </div>
