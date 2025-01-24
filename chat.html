@@ -204,53 +204,55 @@
 
 
           // Send message
-          document.getElementById('sendMessage').addEventListener('click', () => {
-              const input = document.getElementById('messageInput');
-              const message = input.value.trim();
-              const clientEmail = localStorage.getItem('userEmail').replace('.', '');
-              console.log(clientEmail);
-            
-              if (!clientEmail) {
-                  alert('Please log in first');
-                  return;
-              }
-            
-              if (message && selectedDeveloperId) {
-                  fetch('https://swifttech-server.onrender.com/message', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json',
-                          'Accept': 'application/json'
-                      },
-                      body: JSON.stringify({
-                          developerId: selectedDeveloperId,
-                          clientEmail: clientEmail,
-                          message: message
-                      })
-                  })
-                  .then(response => {
-                      if (!response.ok) {
-                          throw new Error('Network response was not ok');
-                      }
-                      return response.json();
-                  })
-                  .then(() => {
-                      input.value = '';
-                      loadMessages(selectedDeveloperId);
-                  })
-                  .catch(error => {
-                      console.error('Error sending message:', error);
-                      alert('Failed to send message. Please try again.');
-                  });
-              }
-          });          
-          
-          // Back button
-          document.querySelector('.back-button').addEventListener('click', () => {
-              document.getElementById('developerList').style.display = 'grid';
-              document.getElementById('chatSection').style.display = 'none';
-              selectedDeveloperId = null;
-          });
+          document.getElementById('sendMessage').addEventListener('click', async () => {
+    const input = document.getElementById('messageInput');
+    const message = input.value.trim();
+    let clientEmail = localStorage.getItem('userEmail');
+
+    if (!clientEmail) {
+        alert('Please log in first');
+        return;
+    }
+
+    // Replace dots with underscores for Firebase compatibility
+    clientEmail = clientEmail.replace(/\./g, '');
+    console.log('Formatted client email:', clientEmail);
+
+    if (message && selectedDeveloperId) {
+        document.getElementById('sendMessage').disabled = true;  // Prevent multiple clicks
+
+        try {
+            const response = await fetch('https://swifttech-server.onrender.com/message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    developerId: selectedDeveloperId,
+                    clientEmail: clientEmail,
+                    message: message
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('Message sent:', data);
+            input.value = '';  // Clear the input after sending
+            loadMessages(selectedDeveloperId);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            alert('Failed to send message. Please try again.');
+        } finally {
+            document.getElementById('sendMessage').disabled = false;  // Re-enable button
+        }
+    } else {
+        alert('Please enter a message and select a developer.');
+    }
+});
 
           // Initialize
           loadDevelopers();
