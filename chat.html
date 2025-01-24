@@ -173,7 +173,12 @@
           function loadMessages(developerId) {
               const clientEmail = localStorage.getItem('userEmail');
               fetch(`https://swifttech-server.onrender.com/messages/${developerId}/${clientEmail}`)
-                  .then(response => response.json())
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error('Network response was not ok');
+                      }
+                      return response.json();
+                  })
                   .then(messages => {
                       const container = document.getElementById('messagesContainer');
                       container.innerHTML = '';
@@ -188,19 +193,29 @@
                       }
                     
                       container.scrollTop = container.scrollHeight;
+                  })
+                  .catch(error => {
+                      console.error('Error loading messages:', error);
                   });
           }
+
           // Send message
           document.getElementById('sendMessage').addEventListener('click', () => {
               const input = document.getElementById('messageInput');
               const message = input.value.trim();
               const clientEmail = localStorage.getItem('userEmail');
             
+              if (!clientEmail) {
+                  alert('Please log in first');
+                  return;
+              }
+            
               if (message && selectedDeveloperId) {
                   fetch('https://swifttech-server.onrender.com/messages', {
                       method: 'POST',
                       headers: {
                           'Content-Type': 'application/json',
+                          'Accept': 'application/json'
                       },
                       body: JSON.stringify({
                           developerId: selectedDeveloperId,
@@ -209,13 +224,22 @@
                       })
                   })
                   .then(response => {
-                      if (response.ok) {
-                          input.value = '';
-                          loadMessages(selectedDeveloperId);
+                      if (!response.ok) {
+                          throw new Error('Network response was not ok');
                       }
+                      return response.json();
+                  })
+                  .then(() => {
+                      input.value = '';
+                      loadMessages(selectedDeveloperId);
+                  })
+                  .catch(error => {
+                      console.error('Error sending message:', error);
+                      alert('Failed to send message. Please try again.');
                   });
               }
-          });
+          });          
+          
           // Back button
           document.querySelector('.back-button').addEventListener('click', () => {
               document.getElementById('developerList').style.display = 'grid';
