@@ -186,8 +186,7 @@
                       if (Array.isArray(messages)) {
                           messages.forEach(msg => {
                               const messageDiv = document.createElement('div');
-                              messageDiv.className = `message ${msg.senderId === clientEmail ? 'sent' : 'received'}`;
-                              messageDiv.textContent = msg.message;
+                              messageDiv.className = `message ${msg.senderId === clientEmail.replace(/\./g, '') ? 'sent' : 'received'}`;                              messageDiv.textContent = msg.message;
                               container.appendChild(messageDiv);
                           });
                       }
