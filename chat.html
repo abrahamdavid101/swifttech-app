@@ -204,7 +204,7 @@
 
 
           // Send message
-          document.getElementById('sendMessage').addEventListener('click', () => {
+          document.getElementById('sendMessage').addEventListener('click', async () => {
               const input = document.getElementById('messageInput');
               const message = input.value.trim();
               const devId = selectedDeveloperId;
@@ -219,33 +219,32 @@
               }
             
               if (message && devId) {
-                  fetch('https://swifttech-server.onrender.com/message', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json'
-                      },                      
-                      body: JSON.stringify({
-                          developerId: devId,
-                          clientEmail: clientEmail,
-                          message: message
-                      })
-                  })
-                  .then(response => {
+                  try {
+                      const response = await fetch('https://swifttech-server.onrender.com/message', {
+                          method: 'POST',
+                          headers: {
+                              'Content-Type': 'application/json',
+                              'Accept': 'application/json'
+                          },                      
+                          body: JSON.stringify({
+                              developerId: devId,
+                              clientEmail: clientEmail,
+                              message: message
+                          })
+                      });
+                      
                       if (!response.ok) {
-                          return response.json().then(err => {
-                              throw new Error(err.message || 'Network response was not ok');
-                          });
+                          const errorData = await response.json();
+                          throw new Error(errorData.message || 'Network response was not ok');
                       }
-                      return response.json();
-                  })
-                  .then(() => {
+                      
+                      await response.json();
                       input.value = '';
                       loadMessages(selectedDeveloperId);
-                  })
-                  .catch(error => {
+                  } catch (error) {
                       console.error('Error sending message:', error);
                       alert('Failed to send message. Please try again.');
-                  });
+                  }
               }
           });          
           
