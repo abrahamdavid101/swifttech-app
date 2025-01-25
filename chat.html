@@ -171,7 +171,7 @@
 
           // Load messages
           function loadMessages(devId) {
-              const clientEmail = localStorage.getItem('userEmail').replace('.', '');
+              const clientEmail = localStorage.getItem('userEmail').replace('.', '_');
               console.log(clientEmail);
               fetch(`https://swifttech-server.onrender.com/messages`)
                   .then(response => {
