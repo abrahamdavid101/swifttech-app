@@ -208,7 +208,7 @@
               const input = document.getElementById('messageInput');
               const message = input.value.trim();
               const devId = selectedDeveloperId;
-              const clientEmail = localStorage.getItem('userEmail').replace('.', '');
+              const clientEmail = localStorage.getItem('userEmail').replace('.', '_');
               console.log('DevId:', devId);
               console.log('ClientEmail:', clientEmail);
               console.log('Message:', message);
@@ -232,6 +232,11 @@
                               message: message
                           })
                       });
+                      console.log('Request body:', JSON.stringify({
+                          developerId: devId,
+                          clientEmail: clientEmail,
+                          message: message
+                      }));
                       
                       if (!response.ok) {
                           const errorData = await response.json();
